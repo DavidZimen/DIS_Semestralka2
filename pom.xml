@@ -81,7 +81,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>fri.uniza.semestralka2/fri.uniza.semestralka2.HelloApplication</mainClass>
+              <mainClass>fri.uniza.semestralka2/fri.uniza.semestralka2.Semestralka2</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
