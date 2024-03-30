@@ -46,6 +46,11 @@ class CompanyEventSimulation : EventSimulationCore() {
     lateinit var customerTypeGenerator: Generator
         private set
 
+    // OVERRIDE FUNCTIONS
+    override fun beforeSimulation() {
+        initGenerators()
+    }
+
     /**
      * Sets the new value of [closingTime] to [time] transformed to seconds.
      */
