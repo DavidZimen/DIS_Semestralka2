@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects
+package fri.uniza.semestralka2.simulation.objects.customer
 
 import fri.uniza.semestralka2.general_utils.isALessThanB
 
@@ -8,13 +8,13 @@ import fri.uniza.semestralka2.general_utils.isALessThanB
  */
 enum class CustomerType {
     /**
-     * Common type with no benefits.
-     */
-    COMMON,
-    /**
      * Type with preferential treatment to [COMMON] customer.
      */
     CONTRACTED,
+    /**
+     * Common type with no benefits.
+     */
+    COMMON,
     /**
      * Customer with own service place.
      */
@@ -38,6 +38,10 @@ enum class CustomerType {
  * State of the [Customer] in the system.
  */
 enum class CustomerState {
+    /**
+     * Initial state of the customer.
+     */
+    ARRIVED,
     /**
      * Customer is waiting in ticket machine queue.
      */

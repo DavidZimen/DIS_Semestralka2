@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects
+package fri.uniza.semestralka2.simulation.objects.order
 
 import fri.uniza.semestralka2.general_utils.isALessThanB
 

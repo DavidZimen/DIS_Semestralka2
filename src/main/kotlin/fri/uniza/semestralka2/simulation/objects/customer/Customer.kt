@@ -1,4 +1,10 @@
-package fri.uniza.semestralka2.simulation.objects
+package fri.uniza.semestralka2.simulation.objects.customer
+
+import fri.uniza.semestralka2.simulation.objects.components.CashDesk
+import fri.uniza.semestralka2.simulation.objects.components.ServingDesk
+import fri.uniza.semestralka2.simulation.objects.order.OrderSize
+import fri.uniza.semestralka2.simulation.objects.order.OrderType
+import fri.uniza.semestralka2.simulation.objects.order.PaymentType
 
 /**
  * Class representing customer of the company that holds necessary data.
@@ -11,9 +17,19 @@ class Customer(probability: Double) {
     val id = CustomerSequence.next
 
     /**
+     * Time printed on the ticket by machine.
+     */
+    var ticketTime = 0.0
+
+    /**
      * Type of the customer.
      */
     val type: CustomerType
+
+    /**
+     * State of the customer in the simulation.
+     */
+    var state = CustomerState.ARRIVED
 
     /**
      * Order type of the customer.
@@ -33,33 +49,38 @@ class Customer(probability: Double) {
     /**
      * Cash desk where customer was waiting in queue.
      */
-    var cashDeskQueue = ""
+    var cashDeskQueue: CashDesk? = null
 
     /**
      * Cash desk where customer paid for his order.
      */
-    var cashDeskPaid = ""
+    var cashDeskPaid: CashDesk? = null
+
+    /**
+     * Service desk where customer receives his order.
+     */
+    var serviceDesk: ServingDesk? = null
 
     // STATISTICS ATTRIBUTES
     /**
      * Time of the customers arrival to company.
      */
-    var systemStartTime = 0.0
+    var systemStartTime = -1.0
 
     /**
      * Time when customer entered queue to ticket generation.
      */
-    var automatStartTime = 0.0
+    var automatStartTime = -1.0
 
     /**
      * Time when customer entered area for waiting until being served.
      */
-    var servicePlaceStartTime = 0.0
+    var servicePlaceStartTime = -1.0
 
     /**
      * Time when customer entered queue to cash desk.
      */
-    var cashDeskStartTime = 0.0
+    var cashDeskStartTime = -1.0
 
     init {
         type = CustomerType.retrieveType(probability)

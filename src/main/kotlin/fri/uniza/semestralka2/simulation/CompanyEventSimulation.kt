@@ -6,6 +6,8 @@ import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.objects.*
+import fri.uniza.semestralka2.simulation.objects.order.OrderType
+import fri.uniza.semestralka2.simulation.objects.order.PaymentType
 import java.time.LocalTime
 
 /**

@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects
+package fri.uniza.semestralka2.simulation.objects.customer
 
 /**
  * Sequence of [Long] numbers for customers ids generated to simulation.
