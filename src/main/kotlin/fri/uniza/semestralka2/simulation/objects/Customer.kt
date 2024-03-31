@@ -1,7 +1,5 @@
 package fri.uniza.semestralka2.simulation.objects
 
-import fri.uniza.semestralka2.general_utils.isALessThanB
-
 /**
  * Class representing customer of the company that holds necessary data.
  * @author David Zimen
@@ -38,17 +36,6 @@ class Customer(probability: Double) {
     var cashDeskStartTime = 0.0
 
     init {
-        type = retrieveType(probability)
-    }
-
-    /**
-     * Returns [CustomerType] based on generated [probability].
-     */
-    private fun retrieveType(probability: Double): CustomerType {
-        return when {
-            isALessThanB(probability,0.5) -> CustomerType.COMMON
-            isALessThanB(probability,0.65) -> CustomerType.CONTRACTED
-            else -> CustomerType.ONLINE
-        }
+        type = CustomerType.retrieveType(probability)
     }
 }

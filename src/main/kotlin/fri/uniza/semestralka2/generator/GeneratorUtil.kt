@@ -8,7 +8,7 @@ import java.util.*
 private val SEED_GENERATOR = Random()
 
 /**
- * @return Next seed of [Long] type.
+ * @return Next seed for application [Generator]s of [Long] type.
  */
 fun nextSeed() = SEED_GENERATOR.nextLong()
 

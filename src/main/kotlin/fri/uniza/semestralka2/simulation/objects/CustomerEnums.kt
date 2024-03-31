@@ -1,5 +1,7 @@
 package fri.uniza.semestralka2.simulation.objects
 
+import fri.uniza.semestralka2.general_utils.isALessThanB
+
 /**
  * Types of the [Customer] visiting company.
  * @author David Zimen
@@ -17,6 +19,19 @@ enum class CustomerType {
      * Customer with own service place.
      */
     ONLINE;
+
+    companion object {
+        /**
+         * Returns [CustomerType] based on generated [probability].
+         */
+        fun retrieveType(probability: Double): CustomerType {
+            return when {
+                isALessThanB(probability,0.5) -> COMMON
+                isALessThanB(probability,0.65) -> CONTRACTED
+                else -> ONLINE
+            }
+        }
+    }
 }
 
 /**
