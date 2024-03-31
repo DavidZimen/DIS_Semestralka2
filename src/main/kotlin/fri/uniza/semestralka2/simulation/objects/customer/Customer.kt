@@ -75,7 +75,7 @@ class Customer(probability: Double) {
     /**
      * Time when customer entered area for waiting until being served.
      */
-    var servicePlaceStartTime = -1.0
+    var servingDeskStartTime = -1.0
 
     /**
      * Time when customer entered queue to cash desk.
