@@ -16,6 +16,32 @@ class Customer(probability: Double) {
     val type: CustomerType
 
     /**
+     * Order type of the customer.
+     */
+    var orderType: OrderType? = null
+
+    /**
+     * Order size of the customer.
+     */
+    var orderSize: OrderSize? = null
+
+    /**
+     * Type of the customer payment.
+     */
+    var paymentType: PaymentType? = null
+
+    /**
+     * Cash desk where customer was waiting in queue.
+     */
+    var cashDeskQueue = ""
+
+    /**
+     * Cash desk where customer paid for his order.
+     */
+    var cashDeskPaid = ""
+
+    // STATISTICS ATTRIBUTES
+    /**
      * Time of the customers arrival to company.
      */
     var systemStartTime = 0.0
