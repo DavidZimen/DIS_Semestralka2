@@ -5,8 +5,7 @@ import fri.uniza.semestralka2.general_utils.minutesToSeconds
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
-import fri.uniza.semestralka2.simulation.objects.OrderType
-import fri.uniza.semestralka2.simulation.objects.PaymentType
+import fri.uniza.semestralka2.simulation.objects.*
 import java.time.LocalTime
 
 /**
@@ -45,7 +44,7 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     /**
      * [Generator] for values in <0; 1) interval.
-     * Call [CustomerType.retrieveCustomerType] with generated value.
+     * Call [CustomerType.retrieveType] with generated value.
      */
     lateinit var customerTypeGenerator: Generator
         private set
