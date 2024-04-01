@@ -1,7 +1,5 @@
 package fri.uniza.semestralka2.simulation.core
 
-import fri.uniza.semestralka2.general_utils.toSeconds
-import java.time.LocalTime
 import java.util.*
 
 /**
@@ -73,13 +71,6 @@ open class EventSimulationCore : SimulationCore() {
             throw IllegalStateException("Event has different core.")
         }
         eventsQueue.add(event)
-    }
-
-    /**
-     * Sets the new value of [simulationTime] to [time] transformed to seconds.
-     */
-    fun setStartTime(time: LocalTime) {
-        simulationTime = time.toSeconds()
     }
 
     /**

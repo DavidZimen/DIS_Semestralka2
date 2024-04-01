@@ -1,6 +1,7 @@
 package fri.uniza.semestralka2.general_utils
 
 import org.apache.commons.math3.util.Precision
+import java.math.RoundingMode
 
 private const val EPSILON = 0.0000001
 val DOUBLE_REGEX = Regex("(0|([1-9][0-9]*))(\\\\.[0-9]+)?\$")
@@ -39,3 +40,5 @@ fun isABetweenBandC(a: Double, b: Double, c: Double): Boolean {
     }
     return isAGreaterOrEqualsToB(a, newB) && isALessOrEqualsToB(a, newC)
 }
+
+fun Double.round(decimalPlaces: Int, mode: RoundingMode) = this.toBigDecimal().setScale(decimalPlaces, mode)

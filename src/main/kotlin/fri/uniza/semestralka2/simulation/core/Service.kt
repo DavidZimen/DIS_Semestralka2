@@ -56,6 +56,11 @@ open class Service<T>(
      */
     protected open fun onQueueRemove(agent: T) { }
 
+    /**
+     * Action to be executed on removed elements from [queue].
+     */
+    protected open fun onRemovedElements(removedList: List<T>) { }
+
 
     // PUBLIC FUNCTIONS
     @Throws(IllegalStateException::class)
@@ -92,5 +97,11 @@ open class Service<T>(
         val agent = queue.remove()
         onQueueRemove(agent)
         return agent
+    }
+
+    fun removeAll() {
+        val removedList = queue.toList()
+        onRemovedElements(removedList)
+        queue.clear()
     }
 }

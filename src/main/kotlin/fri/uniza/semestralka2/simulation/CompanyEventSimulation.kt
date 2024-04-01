@@ -2,6 +2,7 @@ package fri.uniza.semestralka2.simulation
 
 import fri.uniza.novinovy_stanok.generator.ContinuousUniformGenerator
 import fri.uniza.semestralka2.general_utils.minutesToSeconds
+import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.components.CashDesk
@@ -9,7 +10,9 @@ import fri.uniza.semestralka2.simulation.components.ServingDesk
 import fri.uniza.semestralka2.simulation.components.ServingDeskQueue
 import fri.uniza.semestralka2.simulation.components.TicketMachine
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
+import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.*
+import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
@@ -26,7 +29,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Number of [ServiceDesk] in simulation.
      */
-    var serviceDeskCount = 3
+    var serviceDeskCount = 15
         set(value) {
             simulationRunningCheck()
             field = value
@@ -35,7 +38,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Number of [CashDesk] in simulation.
      */
-    var cashDeskCount = 3
+    var cashDeskCount = 6
         set(value) {
             simulationRunningCheck()
             field = value
@@ -51,6 +54,12 @@ class CompanyEventSimulation : EventSimulationCore() {
         }
 
     // TIME ATTRIBUTES
+    /**
+     * Start of the simulation as defined by the user.
+     */
+    var openTime = LocalTime.of(9, 0).toSeconds()
+        private set
+
     /**
      * End of the simulation as defined by the user.
      */
@@ -75,7 +84,7 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Instance of [ExponentialGenerator] with lambda set to 1 / 2 minutes.
      * @return Random value in seconds.
      */
-    lateinit var automatTimeGenerator: Generator
+    lateinit var ticketMachineGenerator: Generator
         private set
 
     /**
@@ -128,6 +137,12 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     /**
      * [Generator] for values in <0; 1) interval.
+     */
+    lateinit var cashDeskChooseGenerator: Generator
+        private set
+
+    /**
+     * [Generator] for values in <0; 1) interval.
      * Call [PaymentType.retrievePaymentType] with generated value.
      */
     lateinit var paymentTypeGenerator: Generator
@@ -155,20 +170,59 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Places where [Customer] dictate and receives his order.
      */
-    private val serviceDesks = mutableListOf<ServingDesk>()
+    val serviceDesks = mutableListOf<ServingDesk>()
 
     /**
      * Places where [Customer]s pay for their order.
      */
-    private val cashDesks = mutableListOf<CashDesk>()
+    val cashDesks = mutableListOf<CashDesk>()
+
+    // SOURCE and SINKS
+    /**
+     * [Customer]s that arrived in the company.
+     */
+    var source = mutableListOf<Customer>()
+        private set
+
+    /**
+     * Served and left [Customer]s.
+     */
+    var sink = mutableListOf<Customer>()
+        private set
+
+    /**
+     * [Customer]s, that were not served because [simulationTime] is passed [automatClosingTime].
+     */
+    var ticketMachineSink = mutableListOf<Customer>()
+        private set
 
     // OVERRIDE FUNCTIONS
     override fun beforeSimulation() {
+        replicationsCount = 1
         initGenerators()
+    }
+
+    override fun beforeReplication() {
+        simulationTime = openTime
         initServices()
+        scheduleEvent(CustomerArrivalEvent(simulationTime + arrivalGenerator.sample().minutesToSeconds(), this))
+    }
+
+    override fun afterSimulation() {
+        println("Source size: ${source.size}")
+        println("Sink size: ${sink.size}")
+        println("Ticket machine sink size: ${ticketMachineSink.size}")
     }
 
     // PUBLIC FUNCTIONS
+    /**
+     * Sets the new value of [openTime] to [time] transformed to seconds.
+     */
+    fun setOpenTime(time: LocalTime) {
+        simulationRunningCheck()
+        openTime = time.toSeconds()
+    }
+
     /**
      * Sets the new value of [closingTime] to [time] transformed to seconds.
      */
@@ -200,8 +254,8 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Initialized generator based on assignment values.
      */
     private fun initGenerators() {
-        arrivalGenerator = ExponentialGenerator(1 / 2.0.minutesToSeconds())
-        automatTimeGenerator = ContinuousUniformGenerator(30.0, 180.0)
+        arrivalGenerator = ExponentialGenerator(1 / 2.0)
+        ticketMachineGenerator = ContinuousUniformGenerator(30.0, 180.0)
         orderDictationGenerator = ContinuousUniformGenerator(60.0, 900.0)
         orderRetrievalTimeGenerator = ContinuousUniformGenerator(30.0, 70.0)
         onlineHandoverTimeGenerator = TriangularDistribution(60.0, 480.0, 120.0)
@@ -225,6 +279,7 @@ class CompanyEventSimulation : EventSimulationCore() {
         orderTypeGenerator = ContinuousUniformGenerator()
         orderSizeGenerator = ContinuousUniformGenerator()
         paymentTypeGenerator = ContinuousUniformGenerator()
+        cashDeskChooseGenerator = ContinuousUniformGenerator()
     }
 
     /**
@@ -233,7 +288,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     private fun initServices() {
         // service desks
         serviceDesks.clear()
-        val online = (serviceDeskCount / 3.0).toBigDecimal().setScale(0, RoundingMode.FLOOR).toInt()
+        val online = (serviceDeskCount / 3.0).round(0, RoundingMode.FLOOR).toInt()
         val other = serviceDeskCount - online
         for (i in 0 until online) {
             serviceDesks.add(ServingDesk("Service desk online ${i + 1}", arrayOf(CustomerType.ONLINE), this))
@@ -253,5 +308,10 @@ class CompanyEventSimulation : EventSimulationCore() {
 
         // ticket machine
         ticketMachine = TicketMachine("Ticket machine", this)
+
+        // source and sinks
+        source.clear()
+        sink.clear()
+        ticketMachineSink.clear()
     }
 }

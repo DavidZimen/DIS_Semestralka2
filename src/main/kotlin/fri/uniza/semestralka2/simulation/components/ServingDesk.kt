@@ -5,6 +5,8 @@ import fri.uniza.semestralka2.simulation.core.Service
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
+import fri.uniza.semestralka2.simulation.objects.order.OrderSize
+import fri.uniza.semestralka2.simulation.objects.order.OrderType
 
 /**
  * @author David Zimen
@@ -17,16 +19,19 @@ class ServingDesk(
 
     override fun onServingStart(agent: Customer) {
         with(agent) {
+            if (!canBeServed(agent)) {
+                throw IllegalStateException("Customer type ${agent.type} can not be served at desk $name")
+            }
             canBeServed(this)
             state = CustomerState.BEING_SERVED
+            orderType = OrderType.retrieveOrderType(core.orderTypeGenerator.sample())
+            orderSize = OrderSize.retrieveOrderSize(core.orderSizeGenerator.sample())
             serviceDesk = this@ServingDesk
         }
     }
 
     @Throws(IllegalStateException::class)
-    private fun canBeServed(customer: Customer) {
-        if (!allowed.contains(customer.type)) {
-            throw IllegalStateException("Customer type ${customer.type} can not be served at desk $name")
-        }
+    fun canBeServed(customer: Customer): Boolean {
+        return !(!allowed.contains(customer.type) || isOccupied)
     }
 }

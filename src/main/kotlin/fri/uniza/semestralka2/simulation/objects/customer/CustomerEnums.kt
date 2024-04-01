@@ -71,7 +71,11 @@ enum class CustomerState {
      */
     PICKING_UP,
     /**
-     * Customer left the company.
+     * Customer left the company served.
      */
-    EXITED;
+    LEFT,
+    /**
+     * Customers, that did not receive ticket due to closing hours
+     */
+    LEFT_TICKET_MACHINE;
 }

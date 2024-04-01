@@ -6,6 +6,7 @@ import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 
 /**
+ * Service for printing tickets after customer arrived into company.
  * @author David Zimen
  */
 class TicketMachine(
@@ -30,5 +31,13 @@ class TicketMachine(
 
     override fun onQueueRemove(agent: Customer) {
         // TODO add to core statistics
+    }
+
+    override fun onRemovedElements(removedList: List<Customer>) {
+        removedList.forEach {
+            it.state = CustomerState.LEFT_TICKET_MACHINE
+            // TODO statistics to ticket machine queue time and queue length
+        }
+        core.ticketMachineSink.addAll(removedList)
     }
 }

@@ -1,6 +1,8 @@
-package fri.uniza.semestralka2.simulation.event
+package fri.uniza.semestralka2.simulation.event.ticket
 
+import fri.uniza.semestralka2.general_utils.isAGreaterThanB
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
+import fri.uniza.semestralka2.simulation.event.CompanyEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 
 /**
@@ -14,8 +16,6 @@ class PrintTicketStartEvent(
     core: CompanyEventSimulation
 ) : CompanyEvent(time, core) {
 
-    //TODO logic to empty queue when past its time
-
     override fun onExecute() {
         if (customer != null) {
             startTicketPrinting(customer)
@@ -25,8 +25,12 @@ class PrintTicketStartEvent(
     }
 
     private fun startTicketPrinting(customer: Customer) {
-        core.ticketMachine.startServing(customer)
-        val endTime = time + core.automatTimeGenerator.sample()
-        core.scheduleEvent(PrintTicketEndEvent(endTime, customer, core))
+        val endTime = time + core.ticketMachineGenerator.sample()
+        if (isAGreaterThanB(endTime, core.automatClosingTime)) {
+            core.ticketMachine.removeAll()
+        } else {
+            core.ticketMachine.startServing(customer)
+            core.scheduleEvent(PrintTicketEndEvent(endTime, customer, core))
+        }
     }
 }

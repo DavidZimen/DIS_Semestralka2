@@ -20,7 +20,7 @@ open class CashDesk(
     @Throws(IllegalStateException::class)
     override fun onServingStart(agent: Customer) {
         // if customer waited in different queue
-        if (agent.cashDeskQueue != null && agent.cashDeskQueue?.name != name) {
+        if (agent.cashDeskQueue != null && agent.cashDeskQueue != this) {
             throw IllegalStateException("Customer ${agent.id} came from ${agent.cashDeskQueue?.name} " +
                     "and trying to serve at $name."
             )

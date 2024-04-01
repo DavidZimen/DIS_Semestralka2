@@ -1,6 +1,7 @@
 package fri.uniza.semestralka2.simulation.components
 
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
+import fri.uniza.semestralka2.simulation.event.service_desk.CustomerServingStartEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
@@ -28,6 +29,14 @@ class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val c
 
         customer.state = CustomerState.WAITING_FOR_SERVING
         customer.servingDeskStartTime = core.simulationTime
+
+        // schedule serving if customer can be served right away
+        for (serviceDesk in core.serviceDesks) {
+            if (serviceDesk.canBeServed(customer)) {
+                core.scheduleEvent(CustomerServingStartEvent(core.simulationTime, serviceDesk, core))
+                break
+            }
+        }
     }
 
     fun remove(type: CustomerType): Customer? {
@@ -51,4 +60,6 @@ class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val c
     }
 
     fun canAdd() = baseQueue.size + onlineQueue.size < maxLength
+
+    fun isAtMaximumCapacity() = baseQueue.size + onlineQueue.size == maxLength
 }

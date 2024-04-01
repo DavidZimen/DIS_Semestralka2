@@ -1,6 +1,7 @@
-package fri.uniza.semestralka2.simulation.event
+package fri.uniza.semestralka2.simulation.event.ticket
 
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
+import fri.uniza.semestralka2.simulation.event.CompanyEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 
 /**
@@ -18,12 +19,13 @@ class PrintTicketEndEvent(
         with(core.ticketMachine) {
             finishServing(customer)
 
+            // move customer to service desks queue
+            core.serviceDeskQueue.add(customer)
+
             // schedule new ticket print if queue is not empty and service queue is not full
             if (!isQueueEmpty && core.serviceDeskQueue.canAdd()) {
                 core.scheduleEvent(PrintTicketStartEvent(time, null, core))
             }
-
-            // TODO plan for customer to go to queue
         }
     }
 }

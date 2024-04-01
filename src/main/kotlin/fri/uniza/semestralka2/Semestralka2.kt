@@ -1,10 +1,10 @@
 package fri.uniza.semestralka2
 
+import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.stage.Stage
-import java.math.RoundingMode
 
 class Semestralka2 : Application() {
     override fun start(stage: Stage) {
@@ -18,5 +18,5 @@ class Semestralka2 : Application() {
 
 fun main() {
 //    Application.launch(Semestralka2::class.java)
-    println((6 / 3.0).toBigDecimal().setScale(0, RoundingMode.FLOOR).toInt())
+    CompanyEventSimulation().runSimulation()
 }
