@@ -6,7 +6,7 @@ import kotlin.properties.Delegates
 /**
  * Type alias for observing function.
  */
-typealias Observer<T> = (T?) -> Unit
+typealias Observer<T> = (T) -> Unit
 
 /**
  * Class that enables to observe value changes on [property].
@@ -23,7 +23,7 @@ class Observable<T> {
      */
     private var property: T? by Delegates.observable(null) { _, _, new ->
         observers.forEach { (_, func) ->
-            func.invoke(new)
+            func.invoke(new!!)
         }
     }
 
