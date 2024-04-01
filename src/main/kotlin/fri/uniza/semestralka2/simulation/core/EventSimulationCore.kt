@@ -2,8 +2,7 @@ package fri.uniza.semestralka2.simulation.core
 
 import fri.uniza.semestralka2.general_utils.toSeconds
 import java.time.LocalTime
-import java.util.PriorityQueue
-import kotlin.jvm.Throws
+import java.util.*
 
 /**
  * Abstract core of the Event driven simulation.
@@ -66,8 +65,13 @@ open class EventSimulationCore : SimulationCore() {
     /**
      * Adds [event] to the [eventsQueue] based on its [AbstractEvent.time] of start.
      * @param event New scheduled event.
+     * @throws IllegalStateException when [AbstractEvent.core] is not equals to this instance.
      */
+    @Throws(IllegalStateException::class)
     fun scheduleEvent(event: AbstractEvent) {
+        if (!event.isSameCore(this)) {
+            throw IllegalStateException("Event has different core.")
+        }
         eventsQueue.add(event)
     }
 
@@ -250,9 +254,8 @@ open class EventSimulationCore : SimulationCore() {
      * Only in [Mode.SINGLE].
      */
     private inner class DelayEvent(time: Double) : AbstractEvent(time, this) {
-        override fun execute() {
+        override fun onExecute() {
             with(this@EventSimulationCore) {
-                simulationTime = time
                 scheduleDelayEvent()
                 Thread.sleep((BASE_DELAY_MILLIS / speed).toLong())
             }

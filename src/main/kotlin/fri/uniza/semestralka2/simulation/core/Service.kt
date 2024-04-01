@@ -19,16 +19,21 @@ open class Service<T>(
     val queueLength: Int
         get() = queue.size
 
+    val isQueueEmpty: Boolean
+        get() = queue.isEmpty()
+
+    val isOccupied: Boolean
+        get() = serving != null
+
     /**
      * Agent currently served by [Service].
      */
-    protected var serving: T? = null
-        private set
+    private var serving: T? = null
 
     /**
      * Queue for objects, if services is occupied.
      */
-    protected val queue: Queue<T> = LinkedList()
+    private val queue: Queue<T> = LinkedList()
 
     // OPEN FUNCTIONS
     /**

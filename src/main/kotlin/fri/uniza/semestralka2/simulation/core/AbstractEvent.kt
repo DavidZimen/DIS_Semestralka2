@@ -18,7 +18,22 @@ abstract class AbstractEvent(
 ) {
 
     /**
-     * Executes the [AbstractEvent] logic.
+     * Enables for implementation of own logic.
+     * ### No need to update [EventSimulationCore.simulationTime].
      */
-    abstract fun execute()
+    abstract fun onExecute()
+
+    /**
+     * Sets [EventSimulationCore.simulationTime] to [time]
+     * and executes the [onExecute] user implemented logic.
+     */
+    fun execute() {
+        core.simulationTime = time
+        onExecute()
+    }
+
+    /**
+     * Compares [core] with provided [core].
+     */
+    fun isSameCore(core: EventSimulationCore) = this.core === core
 }

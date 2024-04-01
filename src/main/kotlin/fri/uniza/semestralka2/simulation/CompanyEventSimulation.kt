@@ -7,6 +7,7 @@ import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.components.CashDesk
 import fri.uniza.semestralka2.simulation.components.ServingDesk
 import fri.uniza.semestralka2.simulation.components.ServingDeskQueue
+import fri.uniza.semestralka2.simulation.components.TicketMachine
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
@@ -146,6 +147,12 @@ class CompanyEventSimulation : EventSimulationCore() {
         private set
 
     /**
+     * Machine to print order tickets for [Customer]s.
+     */
+    lateinit var ticketMachine: TicketMachine
+        private set
+
+    /**
      * Places where [Customer] dictate and receives his order.
      */
     private val serviceDesks = mutableListOf<ServingDesk>()
@@ -243,5 +250,8 @@ class CompanyEventSimulation : EventSimulationCore() {
 
         // service desks queue
         serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, this)
+
+        // ticket machine
+        ticketMachine = TicketMachine("Ticket machine", this)
     }
 }
