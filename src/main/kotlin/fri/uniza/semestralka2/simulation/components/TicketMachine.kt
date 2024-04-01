@@ -27,10 +27,12 @@ class TicketMachine(
             automatStartTime = core.simulationTime
             state = CustomerState.WAITING_FOR_TICKET
         }
+        // TODO queue length stats
     }
 
     override fun onQueueRemove(agent: Customer) {
-        // TODO add to core statistics
+        core.replicationStats.ticketQueueTime.addSample(core.simulationTime - agent.automatStartTime)
+        // TODO queue length stats
     }
 
     override fun onRemovedElements(removedList: List<Customer>) {

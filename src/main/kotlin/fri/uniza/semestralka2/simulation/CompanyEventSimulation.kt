@@ -16,6 +16,8 @@ import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
+import fri.uniza.semestralka2.simulation.statistics.OverallStats
+import fri.uniza.semestralka2.simulation.statistics.ReplicationStats
 import java.math.RoundingMode
 import java.time.LocalTime
 
@@ -154,7 +156,6 @@ class CompanyEventSimulation : EventSimulationCore() {
     private val paymentTimeGenerators = mutableMapOf<PaymentType, Generator>()
 
     // SERVICES
-
     /**
      * Queue for [Customer]s for waiting until being served at one of [serviceDesks].
      */
@@ -196,22 +197,37 @@ class CompanyEventSimulation : EventSimulationCore() {
     var ticketMachineSink = mutableListOf<Customer>()
         private set
 
+    //STATISTICS
+    /**
+     * Statistics for single replications.
+     */
+    val replicationStats = ReplicationStats()
+
+    /**
+     * Cumulative statistics for all replications.
+     */
+    private val overallStats = OverallStats()
+
     // OVERRIDE FUNCTIONS
     override fun beforeSimulation() {
-        replicationsCount = 1
+        overallStats.reset()
         initGenerators()
     }
 
     override fun beforeReplication() {
         simulationTime = openTime
+        replicationStats.reset()
         initServices()
         scheduleEvent(CustomerArrivalEvent(simulationTime + arrivalGenerator.sample().minutesToSeconds(), this))
     }
 
     override fun afterSimulation() {
-        println("Source size: ${source.size}")
-        println("Sink size: ${sink.size}")
-        println("Ticket machine sink size: ${ticketMachineSink.size}")
+        println("Replications: $replicationsExecuted")
+        println(overallStats)
+    }
+
+    override fun afterReplication() {
+        addToOverallStats()
     }
 
     // PUBLIC FUNCTIONS
@@ -313,5 +329,15 @@ class CompanyEventSimulation : EventSimulationCore() {
         source.clear()
         sink.clear()
         ticketMachineSink.clear()
+    }
+
+    /**
+     * Adds single replication statistic into [overallStats].
+     */
+    private fun addToOverallStats() {
+        overallStats.systemTime.addSample(replicationStats.systemTime.mean)
+        overallStats.ticketQueueTime.addSample(replicationStats.ticketQueueTime.mean)
+        overallStats.lastCustomerExit.addSample(replicationStats.lastCustomerExit)
+        overallStats.customersServed.addSample(replicationStats.customersServed)
     }
 }
