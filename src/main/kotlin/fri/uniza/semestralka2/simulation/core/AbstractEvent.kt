@@ -1,5 +1,7 @@
 package fri.uniza.semestralka2.simulation.core
 
+import fri.uniza.semestralka2.general_utils.secondsToLocalTime
+
 /**
  * Abstract event class for [EventSimulationCore].
  * @author David Zimen
@@ -21,7 +23,7 @@ abstract class AbstractEvent(
      * Enables for implementation of own logic.
      * ### No need to update [EventSimulationCore.simulationTime].
      */
-    abstract fun onExecute()
+    protected abstract fun onExecute()
 
     /**
      * Sets [EventSimulationCore.simulationTime] to [time]
@@ -30,10 +32,22 @@ abstract class AbstractEvent(
     fun execute() {
         core.simulationTime = time
         onExecute()
+        updateState()
     }
 
     /**
      * Compares [core] with provided [core].
      */
     fun isSameCore(core: EventSimulationCore) = this.core === core
+
+    /**
+     * Sets [EventSimulationState.time] to [EventSimulationCore.simulationTime]
+     * and emits new value to [EventSimulationCore.simulationStateObservable].
+     */
+    private fun updateState() {
+        with(core) {
+            simulationState.time = simulationTime.secondsToLocalTime()
+            simulationStateObservable.next(simulationState)
+        }
+    }
 }

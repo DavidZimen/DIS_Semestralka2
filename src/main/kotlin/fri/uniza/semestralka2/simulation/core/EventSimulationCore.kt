@@ -1,5 +1,7 @@
 package fri.uniza.semestralka2.simulation.core
 
+import fri.uniza.semestralka2.observer.Observable
+import java.time.LocalTime
 import java.util.*
 
 /**
@@ -43,6 +45,20 @@ open class EventSimulationCore : SimulationCore() {
      * Current time of the simulation.
      */
     var simulationTime = -1.0
+
+    /**
+     * [Observable] for enabling subscription on [EventSimulationState].
+     * Possible to override.
+     */
+    open var simulationStateObservable = Observable<EventSimulationState>()
+        protected set
+
+    /**
+     * For keeping changes until choosing to notify [simulationStateObservable] subscribers.
+     * Attribute for [simulationTime] is automatically set at the end of [AbstractEvent] execution.
+     */
+    open var simulationState = EventSimulationState()
+        protected set
 
     /**
      * Indication if simulation is stopped by user.
@@ -170,6 +186,7 @@ open class EventSimulationCore : SimulationCore() {
 
         do {
             beforeReplication()
+            scheduleDelayEvent()
             executeEvents()
             replicationsExecuted++
             afterReplication()
@@ -206,7 +223,7 @@ open class EventSimulationCore : SimulationCore() {
      */
     private fun scheduleDelayEvent() {
         if (mode == Mode.SINGLE) {
-            scheduleEvent(DelayEvent(simulationTime + BASE_DELAY_MILLIS))
+            scheduleEvent(DelayEvent(simulationTime + (SEC_BETWEEN_DELAYS * speed)))
         }
     }
 
@@ -223,7 +240,8 @@ open class EventSimulationCore : SimulationCore() {
     companion object {
         private const val MAX_SPEED_UP = 1_000.0
         private const val MIN_SLOW_DOWN = 0.000_1
-        private const val BASE_DELAY_MILLIS = 1_000L
+        private const val DELAY_MILLIS = 100L
+        private const val SEC_BETWEEN_DELAYS = 1.0
     }
 
     /**
@@ -248,8 +266,15 @@ open class EventSimulationCore : SimulationCore() {
         override fun onExecute() {
             with(this@EventSimulationCore) {
                 scheduleDelayEvent()
-                Thread.sleep((BASE_DELAY_MILLIS / speed).toLong())
+                Thread.sleep((DELAY_MILLIS / speed).toLong())
             }
         }
     }
+}
+
+/**
+ * Abstract class to be extended for keeping state of the [EventSimulationCore].
+ */
+open class EventSimulationState {
+    var time: LocalTime = LocalTime.now()
 }

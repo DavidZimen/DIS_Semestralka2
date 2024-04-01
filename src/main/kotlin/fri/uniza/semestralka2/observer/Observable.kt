@@ -27,10 +27,13 @@ class Observable<T> {
         }
     }
 
+    val value: T
+        get() = property!!
+
     /**
      * Sets new value for [property] and notifies all [observers].
      */
-    fun next(newValue: T?) {
+    fun next(newValue: T) {
         property = newValue
     }
 
