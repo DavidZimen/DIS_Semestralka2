@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects.components
+package fri.uniza.semestralka2.simulation.components
 
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.Service
@@ -16,8 +16,11 @@ class ServingDesk(
 ) : Service<Customer>(name, core) {
 
     override fun onServingStart(agent: Customer) {
-        canBeServed(agent)
-        agent.state = CustomerState.BEING_SERVED
+        with(agent) {
+            canBeServed(this)
+            state = CustomerState.BEING_SERVED
+            serviceDesk = this@ServingDesk
+        }
     }
 
     @Throws(IllegalStateException::class)

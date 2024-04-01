@@ -1,7 +1,7 @@
 package fri.uniza.semestralka2.simulation.objects.customer
 
-import fri.uniza.semestralka2.simulation.objects.components.CashDesk
-import fri.uniza.semestralka2.simulation.objects.components.ServingDesk
+import fri.uniza.semestralka2.simulation.components.CashDesk
+import fri.uniza.semestralka2.simulation.components.ServingDesk
 import fri.uniza.semestralka2.simulation.objects.order.OrderSize
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType

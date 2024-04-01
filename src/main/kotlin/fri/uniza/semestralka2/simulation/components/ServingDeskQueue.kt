@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects.components
+package fri.uniza.semestralka2.simulation.components
 
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.objects.customer.Customer

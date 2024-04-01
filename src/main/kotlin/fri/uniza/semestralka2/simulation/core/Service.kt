@@ -16,6 +16,9 @@ open class Service<T>(
      */
     protected open val core: EventSimulationCore
 ) {
+    val queueLength: Int
+        get() = queue.size
+
     /**
      * Agent currently served by [Service].
      */
@@ -25,7 +28,7 @@ open class Service<T>(
     /**
      * Queue for objects, if services is occupied.
      */
-    protected open val queue: Queue<T> = LinkedList()
+    protected val queue: Queue<T> = LinkedList()
 
     // OPEN FUNCTIONS
     /**

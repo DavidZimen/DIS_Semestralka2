@@ -4,10 +4,15 @@ import fri.uniza.novinovy_stanok.generator.ContinuousUniformGenerator
 import fri.uniza.semestralka2.general_utils.minutesToSeconds
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
+import fri.uniza.semestralka2.simulation.components.CashDesk
+import fri.uniza.semestralka2.simulation.components.ServingDesk
+import fri.uniza.semestralka2.simulation.components.ServingDeskQueue
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.objects.*
+import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
+import java.math.RoundingMode
 import java.time.LocalTime
 
 /**
@@ -15,6 +20,34 @@ import java.time.LocalTime
  * @author David Zimen
  */
 class CompanyEventSimulation : EventSimulationCore() {
+
+    // SERVICES COUNT
+    /**
+     * Number of [ServiceDesk] in simulation.
+     */
+    var serviceDeskCount = 3
+        set(value) {
+            simulationRunningCheck()
+            field = value
+        }
+
+    /**
+     * Number of [CashDesk] in simulation.
+     */
+    var cashDeskCount = 3
+        set(value) {
+            simulationRunningCheck()
+            field = value
+        }
+
+    /**
+     * Maximum length for [serviceDeskQueue]
+     */
+    var serviceDeskQueueMaxLength = 8
+        set(value) {
+            simulationRunningCheck()
+            field = value
+        }
 
     // TIME ATTRIBUTES
     /**
@@ -104,9 +137,28 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     private val paymentTimeGenerators = mutableMapOf<PaymentType, Generator>()
 
+    // SERVICES
+
+    /**
+     * Queue for [Customer]s for waiting until being served at one of [serviceDesks].
+     */
+    lateinit var serviceDeskQueue: ServingDeskQueue
+        private set
+
+    /**
+     * Places where [Customer] dictate and receives his order.
+     */
+    private val serviceDesks = mutableListOf<ServingDesk>()
+
+    /**
+     * Places where [Customer]s pay for their order.
+     */
+    private val cashDesks = mutableListOf<CashDesk>()
+
     // OVERRIDE FUNCTIONS
     override fun beforeSimulation() {
         initGenerators()
+        initServices()
     }
 
     // PUBLIC FUNCTIONS
@@ -166,5 +218,30 @@ class CompanyEventSimulation : EventSimulationCore() {
         orderTypeGenerator = ContinuousUniformGenerator()
         orderSizeGenerator = ContinuousUniformGenerator()
         paymentTypeGenerator = ContinuousUniformGenerator()
+    }
+
+    /**
+     * Initializes services based on provided [serviceDeskCount], [cashDeskCount] and [serviceDeskQueueMaxLength].
+     */
+    private fun initServices() {
+        // service desks
+        serviceDesks.clear()
+        val online = (serviceDeskCount / 3.0).toBigDecimal().setScale(0, RoundingMode.FLOOR).toInt()
+        val other = serviceDeskCount - online
+        for (i in 0 until online) {
+            serviceDesks.add(ServingDesk("Service desk online ${i + 1}", arrayOf(CustomerType.ONLINE), this))
+        }
+        for (i in 0 until other) {
+            serviceDesks.add(ServingDesk("Service desk ${i + 1}", arrayOf(CustomerType.COMMON, CustomerType.CONTRACTED), this))
+        }
+
+        // cash desks
+        cashDesks.clear()
+        for (i in 0 until cashDeskCount) {
+            cashDesks.add(CashDesk("Cash desk ${i + 1}", this))
+        }
+
+        // service desks queue
+        serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, this)
     }
 }

@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.objects.components
+package fri.uniza.semestralka2.simulation.components
 
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.Service
@@ -17,6 +17,7 @@ open class CashDesk(
     override val core: CompanyEventSimulation
 ) : Service<Customer>(name, core) {
 
+    @Throws(IllegalStateException::class)
     override fun onServingStart(agent: Customer) {
         // if customer waited in different queue
         if (agent.cashDeskQueue != null && agent.cashDeskQueue?.name != name) {
@@ -26,7 +27,6 @@ open class CashDesk(
         }
 
         with(agent) {
-            cashDeskStartTime = core.simulationTime
             cashDeskPaid = this@CashDesk
             state = CustomerState.PAYING
         }
@@ -42,6 +42,7 @@ open class CashDesk(
         }
 
         with(agent) {
+            cashDeskStartTime = core.simulationTime
             cashDeskQueue = this@CashDesk
             state = CustomerState.WAITING_FOR_PAY
         }

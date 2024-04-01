@@ -8,8 +8,4 @@ import fri.uniza.semestralka2.simulation.core.AbstractEvent
  * Extends [AbstractEvent]. Overrides its [AbstractEvent.core] by casting it to [CompanyEventSimulation].
  * @author David Zimen
  */
-abstract class CompanyEvent(time: Double, core: CompanyEventSimulation) : AbstractEvent(time, core) {
-
-    override val core: CompanyEventSimulation
-        get() = super.core as CompanyEventSimulation
-}
+abstract class CompanyEvent(time: Double, override val core: CompanyEventSimulation) : AbstractEvent(time, core)
