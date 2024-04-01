@@ -31,7 +31,7 @@ class TicketMachine(
     }
 
     override fun onQueueRemove(agent: Customer) {
-        core.replicationStats.ticketQueueTime.addSample(core.simulationTime - agent.automatStartTime)
+        core.replicationStats.ticketQueueTime.addEntry(core.simulationTime - agent.automatStartTime)
         // TODO queue length stats
     }
 

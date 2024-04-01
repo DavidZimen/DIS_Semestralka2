@@ -53,7 +53,7 @@ class DiscreteStatistic {
     /**
      * Adds [sample] to data set and recalculates all variables.
      */
-    fun addSample(sample: Number) {
+    fun addEntry(sample: Number) {
         val sampleDouble = sample.toDouble()
         lastValue = sample
         count++

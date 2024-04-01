@@ -49,7 +49,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Maximum length for [serviceDeskQueue]
      */
-    var serviceDeskQueueMaxLength = 8
+    var serviceDeskQueueMaxLength = 9
         set(value) {
             simulationRunningCheck()
             field = value
@@ -228,6 +228,7 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     override fun afterReplication() {
         addToOverallStats()
+        println(replicationsExecuted)
     }
 
     // PUBLIC FUNCTIONS
@@ -335,9 +336,9 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Adds single replication statistic into [overallStats].
      */
     private fun addToOverallStats() {
-        overallStats.systemTime.addSample(replicationStats.systemTime.mean)
-        overallStats.ticketQueueTime.addSample(replicationStats.ticketQueueTime.mean)
-        overallStats.lastCustomerExit.addSample(replicationStats.lastCustomerExit)
-        overallStats.customersServed.addSample(replicationStats.customersServed)
+        overallStats.systemTime.addEntry(replicationStats.systemTime.mean)
+        overallStats.ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
+        overallStats.lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
+        overallStats.customersServed.addEntry(replicationStats.customersServed)
     }
 }

@@ -26,9 +26,25 @@ open class Service<T>(
         get() = serving != null
 
     /**
+     * Current [State] of the [Service].
+     */
+    var state = State.FREE
+        private set
+
+    /**
+     * Workload of the [Service].
+     */
+    var workload = Workload()
+        private set
+
+    /**
      * Agent currently served by [Service].
      */
     private var serving: T? = null
+        set(value) {
+            state = if (value == null) State.FREE else State.OCCUPIED
+            field = value
+        }
 
     /**
      * Queue for objects, if services is occupied.
@@ -61,7 +77,6 @@ open class Service<T>(
      */
     protected open fun onRemovedElements(removedList: List<T>) { }
 
-
     // PUBLIC FUNCTIONS
     @Throws(IllegalStateException::class)
     fun startServing(agent: T) {
@@ -70,6 +85,7 @@ open class Service<T>(
         }
         onServingStart(agent)
         serving = agent
+        workload.calculateWorkFlow()
     }
 
     @Throws(IllegalStateException::class)
@@ -79,6 +95,7 @@ open class Service<T>(
         }
         onServingEnd(agent)
         serving = null
+        workload.calculateWorkFlow()
     }
 
     @Throws(IllegalStateException::class)
@@ -103,5 +120,32 @@ open class Service<T>(
         val removedList = queue.toList()
         onRemovedElements(removedList)
         queue.clear()
+    }
+
+    /**
+     * Possible states of the [Service].
+     */
+    enum class State(val value: Int) {
+        FREE(0),
+        OCCUPIED(1);
+    }
+
+    /**
+     * Class to calculate percent work load of the [Service].
+     */
+     inner class Workload {
+        var averageWorkload = 0.0
+            private set
+
+        private var totalArea = 0.0
+
+        private var lastValue = state to core.simulationTime
+
+        fun calculateWorkFlow() {
+            val timeDifference = core.simulationTime - lastValue.second
+            totalArea += timeDifference / 2 * (state.value + lastValue.first.value)
+            averageWorkload = totalArea / core.simulationTime
+            lastValue = state to core.simulationTime
+        }
     }
 }

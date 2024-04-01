@@ -13,10 +13,6 @@ class DeskOccupationEndEvent(
 ) : DeskOccupationEvent(time, customer, core) {
 
     override fun onExecute() {
-        if (PaymentStartEvent.COUNT == 308) {
-            println("Error")
-        }
-
         if (customer.serviceDesk == null) {
             throw IllegalStateException("Customer has to have Service desk assigned.")
         }

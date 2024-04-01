@@ -24,7 +24,7 @@ fun main() {
 //            println("\r${state!!.time}")
 //        }
 //        speedUpSimulation()
-        replicationsCount = 10
+        replicationsCount = 20000
         runSimulation()
     }
 }

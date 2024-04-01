@@ -13,7 +13,7 @@ class CustomerExitEvent(
 
     override fun onExecute() {
         customer.state = CustomerState.LEFT
-        core.replicationStats.systemTime.addSample(time - customer.systemStartTime)
+        core.replicationStats.systemTime.addEntry(time - customer.systemStartTime)
         core.replicationStats.lastCustomerExit = time
         core.replicationStats.customersServed++
         core.sink.add(customer)
