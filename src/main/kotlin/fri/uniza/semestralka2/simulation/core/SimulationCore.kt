@@ -62,6 +62,8 @@ open class SimulationCore {
         if (state != SimulationState.PAUSED) {
             throw IllegalStateException("Simulation can only be resumed from ${SimulationState.PAUSED} state.")
         }
+        state = SimulationState.RUNNING
+        onResumeSimulation()
     }
 
     /**

@@ -14,6 +14,7 @@ import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
+import fri.uniza.semestralka2.simulation.objects.customer.CustomerSequence
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
@@ -64,12 +65,6 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Start of the simulation as defined by the user.
      */
     var openTime = LocalTime.of(9, 0).toSeconds()
-        private set
-
-    /**
-     * End of the simulation as defined by the user.
-     */
-    var closingTime = LocalTime.of(17, 30).toSeconds()
         private set
 
     /**
@@ -219,6 +214,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     override fun beforeReplication() {
         simulationTime = openTime
         replicationStats.reset()
+        CustomerSequence.reset()
         initServices()
         scheduleEvent(CustomerArrivalEvent(simulationTime + arrivalGenerator.sample().minutesToSeconds(), this))
     }
@@ -246,7 +242,7 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     fun setClosingTime(time: LocalTime) {
         simulationRunningCheck()
-        closingTime = time.toSeconds()
+        simulationEndTime = time.toSeconds()
     }
 
     /**

@@ -126,6 +126,7 @@ class GuiController : Initializable {
     fun onStop() {
         simulationApi.stopObservingSimulation("observer")
         simulationApi.stopSimulation()
+        stateDisabling(SimulationState.STOPPED)
     }
 
     @FXML

@@ -41,6 +41,12 @@ open class EventSimulationCore : SimulationCore() {
     var simulationTime = -1.0
 
     /**
+     * End of the simulation as defined by the user.
+     */
+    var simulationEndTime = -1.0
+        protected set
+
+    /**
      * [Observable] for enabling subscription on [EventSimulationState].
      * Possible to override.
      */
@@ -182,8 +188,12 @@ open class EventSimulationCore : SimulationCore() {
      * Only if [mode] is [EventSimulationMode.SINGLE].
      */
     private fun scheduleDelayEvent() {
-        if (mode == EventSimulationMode.SINGLE) {
-            scheduleEvent(DelayEvent(simulationTime + (SEC_BETWEEN_DELAYS * speed)))
+        if (mode == EventSimulationMode.REPLICATIONS) {
+            return
+        }
+        val newTime = simulationTime + (SEC_BETWEEN_DELAYS * speed)
+        if (newTime < simulationEndTime || eventsQueue.any { it !is DelayEvent }) {
+            scheduleEvent(DelayEvent(newTime))
         }
     }
 
