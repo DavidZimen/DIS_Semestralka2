@@ -35,6 +35,10 @@ class GuiController : Initializable {
     private lateinit var speed: Label
     @FXML
     private lateinit var simulationTime: Label
+    @FXML
+    private lateinit var modeS: RadioButton
+    @FXML
+    private lateinit var modeR: RadioButton
 
     // BUTTONS
     @FXML
@@ -110,11 +114,11 @@ class GuiController : Initializable {
         cashDesksCount.allowOnlyInt()
 
         stateDisabling(SimulationState.STOPPED)
+        changeMode()
     }
 
     @FXML
     fun onStart() {
-        simulationApi.changeMode(EventSimulationMode.SINGLE)
         simulationApi.setEntryParameters(replications.text.toInt(), serviceDesksCount.text.toInt(), cashDesksCount.text.toInt())
         createSimulationObserver()
         GlobalScope.launch {
@@ -131,7 +135,6 @@ class GuiController : Initializable {
 
     @FXML
     fun onResume() {
-        simulationApi.changeMode(EventSimulationMode.SINGLE)
         GlobalScope.launch {
             simulationApi.resumeSimulation()
         }
@@ -147,7 +150,9 @@ class GuiController : Initializable {
     fun slowDown() = simulationApi.slowDownSimulation().toSpeedLabel()
 
     @FXML
-    fun changeMode() { }
+    fun changeMode() {
+        simulationApi.changeMode(if (modeR.isSelected) EventSimulationMode.REPLICATIONS else EventSimulationMode.SINGLE)
+    }
 
     private fun createSimulationObserver() {
         simulationApi.observeSimulation("observer") { state ->
