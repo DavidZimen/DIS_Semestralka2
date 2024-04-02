@@ -96,7 +96,7 @@ open class EventSimulationCore : SimulationCore() {
         replicationsExecuted = 0
         eventsQueue.clear()
         beforeSimulation()
-        simulationRun()
+        simulationRun(true)
     }
 
     /**
@@ -107,7 +107,7 @@ open class EventSimulationCore : SimulationCore() {
         if (simulationStopped || !simulationPaused) {
             throw IllegalStateException("Cannot be resumed from stopped state.")
         }
-        simulationRun()
+        simulationRun(false)
     }
 
     /**
@@ -179,16 +179,19 @@ open class EventSimulationCore : SimulationCore() {
      * Executes replication until [shouldContinueSimulation] returns false.
      * If simulation was not paused, the executes [afterSimulation] method.
      */
-    private fun simulationRun() {
+    private fun simulationRun(fromBeginning: Boolean) {
         simulationStopped = false
         simulationPaused = false
 
         do {
-            beforeReplication()
-            scheduleDelayEvent()
-            executeEvents()
-            replicationsExecuted++
-            afterReplication()
+            if (fromBeginning) {
+                beforeReplication()
+                scheduleDelayEvent()
+            }
+            if (executeEvents()) {
+                replicationsExecuted++
+                afterReplication()
+            }
         } while (shouldContinueSimulation())
 
         if (!simulationPaused) {
@@ -200,9 +203,10 @@ open class EventSimulationCore : SimulationCore() {
     /**
      * Executes [AbstractEvent]s from [eventsQueue] until it is empty or told to stop.
      * @throws IllegalStateException when time of current event is less than [simulationTime].
+     * @return True if all events were successfully executed, false otherwise.
      */
     @Throws(IllegalStateException::class)
-    private fun executeEvents() {
+    private fun executeEvents(): Boolean {
         var event: AbstractEvent
         while (eventsQueue.isNotEmpty()) {
             event = eventsQueue.poll()
@@ -211,9 +215,10 @@ open class EventSimulationCore : SimulationCore() {
             }
             event.execute()
             if (shouldStopSimulation()) {
-                break
+                return false
             }
         }
+        return true
     }
 
     /**

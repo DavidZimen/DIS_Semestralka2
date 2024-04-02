@@ -205,17 +205,17 @@
       </FlowPane>
       <HBox prefHeight="958.0" prefWidth="1880.0">
          <children>
-            <TableView fx:id="customersTable" maxHeight="-Infinity" prefHeight="700.0" prefWidth="900.0">
+            <TableView fx:id="customersTable" maxHeight="-Infinity" prefHeight="700.0" prefWidth="1002.0">
               <columns>
                 <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
                 <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
                   <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0" text="Arrival time" />
-                  <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order type" />
-                  <TableColumn fx:id="orderSize" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order size" />
-                  <TableColumn fx:id="serviceDesk" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Service desk" />
-                  <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Cash desk queue" />
-                  <TableColumn fx:id="chasDesk" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Cash desk" />
-                  <TableColumn fx:id="currentState" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Current state" />
+                  <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="121.0" sortable="false" text="Order type" />
+                  <TableColumn fx:id="orderSize" editable="false" minWidth="79.0" prefWidth="102.0" sortable="false" text="Order size" />
+                  <TableColumn fx:id="serviceDesk" editable="false" minWidth="77.0" prefWidth="121.0" resizable="false" sortable="false" text="Service desk" />
+                  <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="56.0" prefWidth="101.0" resizable="false" sortable="false" text="Cash desk queue" />
+                  <TableColumn fx:id="chasDesk" editable="false" minWidth="55.0" prefWidth="104.0" resizable="false" sortable="false" text="Cash desk" />
+                  <TableColumn fx:id="currentState" editable="false" minWidth="51.0" prefWidth="127.0" resizable="false" sortable="false" text="Current state" />
               </columns>
             </TableView>
          </children>

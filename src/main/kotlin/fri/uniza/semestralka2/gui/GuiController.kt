@@ -79,13 +79,14 @@ class GuiController : Initializable {
 
     @FXML
     fun onResume() {
-
+        simulationApi.changeMode(EventSimulationCore.Mode.SINGLE)
+        GlobalScope.launch {
+            simulationApi.resumeSimulation()
+        }
     }
 
     @FXML
-    fun onPause() {
-
-    }
+    fun onPause() = simulationApi.pauseSimulation()
 
     @FXML
     fun speedUp() = simulationApi.speedUpSimulation().toSpeedLabel()

@@ -228,7 +228,6 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     override fun afterReplication() {
         addToOverallStats()
-        println(replicationsExecuted)
     }
 
     // PUBLIC FUNCTIONS
