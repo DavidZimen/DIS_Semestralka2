@@ -3,6 +3,7 @@ package fri.uniza.semestralka2.api
 import fri.uniza.semestralka2.observer.Observer
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
+import fri.uniza.semestralka2.simulation.core.EventSimulationMode
 import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -16,14 +17,6 @@ class CompanySimulationApi private constructor() {
      * Instance of the [CompanyEventSimulation].
      */
     private val simulation = CompanyEventSimulation()
-
-    /**
-     * Sets [replicationsCount] to all simulations.
-     */
-    @Throws(IllegalStateException::class)
-    fun setReplicationsCount(replicationsCount: Long) {
-        simulation.replicationsCount = replicationsCount
-    }
 
     /**
      * Async function to start [simulation] in different thread.
@@ -61,7 +54,7 @@ class CompanySimulationApi private constructor() {
     /**
      * Changes mode of the [simulation].
      */
-    fun changeMode(mode: EventSimulationCore.Mode) {
+    fun changeMode(mode: EventSimulationMode) {
         simulation.mode = mode
     }
 
@@ -100,6 +93,12 @@ class CompanySimulationApi private constructor() {
      */
     fun stopObservingSimulation(name: String) {
         simulation.simulationStateObservable.unsubscribe(name)
+    }
+
+    fun setEntryParameters(replicationsCount: Int, serviceDeskCount: Int, cashDeskCount: Int) {
+        simulation.replicationsCount = replicationsCount.toLong()
+        simulation.serviceDeskCount = serviceDeskCount
+        simulation.cashDeskCount = cashDeskCount
     }
 
     companion object {

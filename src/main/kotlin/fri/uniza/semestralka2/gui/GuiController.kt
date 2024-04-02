@@ -1,8 +1,10 @@
 package fri.uniza.semestralka2.gui
 
 import fri.uniza.semestralka2.api.CompanySimulationApi
+import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.EventSimulationCore
+import fri.uniza.semestralka2.simulation.core.EventSimulationMode
+import fri.uniza.semestralka2.simulation.core.SimulationState
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
 import javafx.application.Platform
@@ -10,23 +12,43 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.control.Label
-import javafx.scene.control.SelectionMode
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.control.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
 import java.net.URL
 import java.util.*
 
+@OptIn(DelicateCoroutinesApi::class)
 class GuiController : Initializable {
 
     private val simulationApi = CompanySimulationApi.instance
 
     @FXML
+    private lateinit var replications: TextField
+    @FXML
+    private lateinit var serviceDesksCount: TextField
+    @FXML
+    private lateinit var cashDesksCount: TextField
+    @FXML
     private lateinit var speed: Label
     @FXML
     private lateinit var simulationTime: Label
+
+    // BUTTONS
+    @FXML
+    private lateinit var startButton: Button
+    @FXML
+    private lateinit var stopButton: Button
+    @FXML
+    private lateinit var resumeButton: Button
+    @FXML
+    private lateinit var pauseButton: Button
+    @FXML
+    private lateinit var speedUpButton: Button
+    @FXML
+    private lateinit var slowDownButton: Button
 
     // TABLE CUSTOMERS
     private var customers = FXCollections.observableArrayList<CustomerDto>()
@@ -82,11 +104,18 @@ class GuiController : Initializable {
         queueLength.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.queueLength) }
         workload.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.workload) }
         empState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
+
+        replications.allowOnlyInt()
+        serviceDesksCount.allowOnlyInt()
+        cashDesksCount.allowOnlyInt()
+
+        stateDisabling(SimulationState.STOPPED)
     }
 
     @FXML
     fun onStart() {
-        simulationApi.changeMode(EventSimulationCore.Mode.SINGLE)
+        simulationApi.changeMode(EventSimulationMode.SINGLE)
+        simulationApi.setEntryParameters(replications.text.toInt(), serviceDesksCount.text.toInt(), cashDesksCount.text.toInt())
         createSimulationObserver()
         GlobalScope.launch {
             simulationApi.runSimulation()
@@ -101,7 +130,7 @@ class GuiController : Initializable {
 
     @FXML
     fun onResume() {
-        simulationApi.changeMode(EventSimulationCore.Mode.SINGLE)
+        simulationApi.changeMode(EventSimulationMode.SINGLE)
         GlobalScope.launch {
             simulationApi.resumeSimulation()
         }
@@ -132,11 +161,43 @@ class GuiController : Initializable {
                 //employees
                 employees = FXCollections.observableArrayList(simState.employees)
                 empTable.items = employees
+
+                stateDisabling(simState.state)
+                simState.speed.toSpeedLabel()
             }
         }
     }
 
     private fun Double.toSpeedLabel() {
-        speed.text = "Speed: ${this}x"
+        speed.text = "Speed: ${this.round(2, RoundingMode.HALF_UP)}x"
+    }
+
+    private fun stateDisabling(state: SimulationState) {
+        when (state) {
+            SimulationState.RUNNING -> {
+                startButton.disable()
+                stopButton.disable(false)
+                resumeButton.disable()
+                pauseButton.disable(false)
+                speedUpButton.disable(false)
+                slowDownButton.disable(false)
+            }
+            SimulationState.STOPPED -> {
+                startButton.disable(false)
+                stopButton.disable()
+                resumeButton.disable()
+                pauseButton.disable()
+                speedUpButton.disable()
+                slowDownButton.disable()
+            }
+            SimulationState.PAUSED -> {
+                startButton.disable()
+                stopButton.disable()
+                resumeButton.disable(false)
+                pauseButton.disable()
+                speedUpButton.disable()
+                slowDownButton.disable()
+            }
+        }
     }
 }

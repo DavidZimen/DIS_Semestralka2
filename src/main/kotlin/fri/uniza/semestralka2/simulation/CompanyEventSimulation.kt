@@ -270,11 +270,12 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Updates [simulationState] with new values.
      */
-    fun updateState() {
+    override fun updateSimulationState() {
         with(simulationState as CompanySimulationState) {
             customers = source.map { it.toDto() }
             employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() }
         }
+        super.updateSimulationState()
     }
 
     /**

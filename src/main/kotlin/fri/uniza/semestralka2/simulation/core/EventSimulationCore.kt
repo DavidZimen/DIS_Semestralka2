@@ -1,7 +1,7 @@
 package fri.uniza.semestralka2.simulation.core
 
+import fri.uniza.semestralka2.general_utils.secondsToLocalTime
 import fri.uniza.semestralka2.observer.Observable
-import java.time.LocalTime
 import java.util.*
 
 /**
@@ -27,19 +27,13 @@ open class EventSimulationCore : SimulationCore() {
         private set
 
     /**
-     * [Mode] of the simulation.
+     * [EventSimulationMode] of the simulation.
      */
-    var mode = Mode.REPLICATIONS
+    var mode = EventSimulationMode.REPLICATIONS
         set(value) {
             field = value
             scheduleDelayEvent()
         }
-
-    /**
-     * Speed index of the simulation.
-     */
-    var speed = 1.0
-        private set
 
     /**
      * Current time of the simulation.
@@ -58,16 +52,6 @@ open class EventSimulationCore : SimulationCore() {
      * Attribute for [simulationTime] is automatically set at the end of [AbstractEvent] execution.
      */
     open lateinit var simulationState: EventSimulationState
-
-    /**
-     * Indication if simulation is stopped by user.
-     */
-    private var simulationStopped = true
-
-    /**
-     * Indication if simulation is paused by user.
-     */
-    private var simulationPaused = false
 
     /**
      * [PriorityQueue] of simulation [AbstractEvent]s, that is sorted by [AbstractEvent.time].
@@ -89,71 +73,35 @@ open class EventSimulationCore : SimulationCore() {
     }
 
     /**
-     * Runs Monte Carlo simulation with users implementation of abstract methods.
-     * Overrides [SimulationCore.runSimulation].
+     * Updates [simulationState] with current value.
      */
-    final override fun runSimulation() {
+    open fun updateSimulationState() {
+        simulationState.state = state
+        simulationState.time = simulationTime.secondsToLocalTime()
+        simulationState.speed = speed
+    }
+
+    /**
+     * Runs Monte Carlo simulation with users implementation of abstract methods.
+     * Overrides [SimulationCore.onRunSimulation].
+     */
+    final override fun onRunSimulation() {
         replicationsExecuted = 0
         eventsQueue.clear()
+        resetSpeed()
         beforeSimulation()
         simulationRun(true)
     }
 
     /**
      * Resumes Event-driven simulation.
-     * Overrides [SimulationCore.resumeSimulation].
+     * Overrides [SimulationCore.onResumeSimulation].
      */
-    final override fun resumeSimulation() {
-        if (simulationStopped || !simulationPaused) {
-            throw IllegalStateException("Cannot be resumed from stopped state.")
-        }
+    final override fun onResumeSimulation() {
         simulationRun(false)
     }
 
-    /**
-     * Stops Event-driven simulation, without possibility to resume.
-     * Overrides [SimulationCore.stopSimulation].
-     */
-    final override fun stopSimulation() {
-        simulationStopped = true
-    }
-
-    /**
-     * Pauses Event-driven simulation, with possibility to resume.
-     * Overrides [SimulationCore.pauseSimulation].
-     */
-    final override fun pauseSimulation() {
-        simulationPaused = true
-    }
-
-    /**
-     * Speeds up the simulation by doubling the current speed.
-     * Overrides [SimulationCore.speedUpSimulation].
-     */
-    final override fun speedUpSimulation() {
-        speed = minOf(speed * 2, MAX_SPEED_UP)
-    }
-
-    /**
-     * Decreases current [speed] by half.
-     * Overrides [SimulationCore.slowDownSimulation].
-     */
-    final override fun slowDownSimulation() {
-        speed = maxOf(speed / 2, MIN_SLOW_DOWN)
-    }
-
     // PROTECTED FUNCTIONS
-    /**
-     * Checks if the simulation is running or is paused.
-     * @throws IllegalStateException when running or paused.
-     */
-    @Throws(IllegalStateException::class)
-    protected fun simulationRunningCheck() {
-        if (!simulationStopped || simulationPaused) {
-            throw IllegalStateException("Simulation is running. Cannot set new replications count !!!")
-        }
-    }
-
     /**
      * Method to execute before whole simulation.
      */
@@ -174,15 +122,23 @@ open class EventSimulationCore : SimulationCore() {
      */
     protected open fun afterReplication() { }
 
+    /**
+     * Checks if the simulation is running or is paused.
+     * @throws IllegalStateException when running or paused.
+     */
+    @Throws(IllegalStateException::class)
+    protected fun simulationRunningCheck() {
+        if (state != SimulationState.STOPPED) {
+            throw IllegalStateException("Simulation is running. Cannot set new replications count !!!")
+        }
+    }
+
     // PRIVATE FUNCTIONS
     /**
      * Executes replication until [shouldContinueSimulation] returns false.
      * If simulation was not paused, the executes [afterSimulation] method.
      */
     private fun simulationRun(fromBeginning: Boolean) {
-        simulationStopped = false
-        simulationPaused = false
-
         do {
             if (fromBeginning) {
                 beforeReplication()
@@ -194,9 +150,9 @@ open class EventSimulationCore : SimulationCore() {
             }
         } while (shouldContinueSimulation())
 
-        if (!simulationPaused) {
+        if (state == SimulationState.RUNNING) {
             afterSimulation()
-            simulationStopped = true
+            stopSimulation()
         }
     }
 
@@ -223,10 +179,10 @@ open class EventSimulationCore : SimulationCore() {
 
     /**
      * Schedules new delay event for the simulation.
-     * Only if [mode] is [Mode.SINGLE].
+     * Only if [mode] is [EventSimulationMode.SINGLE].
      */
     private fun scheduleDelayEvent() {
-        if (mode == Mode.SINGLE) {
+        if (mode == EventSimulationMode.SINGLE) {
             scheduleEvent(DelayEvent(simulationTime + (SEC_BETWEEN_DELAYS * speed)))
         }
     }
@@ -234,7 +190,7 @@ open class EventSimulationCore : SimulationCore() {
     /**
      * Function to determined if simulation run was stopped or paused.
      */
-    private fun shouldStopSimulation() = simulationStopped || simulationPaused
+    private fun shouldStopSimulation() = state != SimulationState.RUNNING
 
     /**
      * Function to determine if execution of planned replications should continue.
@@ -242,43 +198,20 @@ open class EventSimulationCore : SimulationCore() {
     private fun shouldContinueSimulation() = replicationsExecuted < replicationsCount && !shouldStopSimulation()
 
     companion object {
-        private const val MAX_SPEED_UP = 1_000.0
-        private const val MIN_SLOW_DOWN = 0.000_1
         private const val DELAY_MILLIS = 100L
         private const val SEC_BETWEEN_DELAYS = 1.0
     }
 
     /**
-     * Modes of the Event simulation.
-     */
-    enum class Mode {
-        /**
-         * Creates delays event for detailed checking.
-         */
-        SINGLE,
-        /**
-         * No delay events. Execute planned replications as fast as possible.
-         */
-        REPLICATIONS;
-    }
-
-    /**
      * Class for delay event to simulate flow of the time in simulation.
-     * Only in [Mode.SINGLE].
+     * Only in [EventSimulationMode.SINGLE].
      */
     private inner class DelayEvent(time: Double) : AbstractEvent(time, this) {
-        override fun onExecuteEvent() {
+        override fun onExecute() {
             with(this@EventSimulationCore) {
                 scheduleDelayEvent()
                 Thread.sleep((DELAY_MILLIS / speed).toLong())
             }
         }
     }
-}
-
-/**
- * Abstract class to be extended for keeping state of the [EventSimulationCore].
- */
-open class EventSimulationState {
-    var time: LocalTime = LocalTime.now()
 }

@@ -45,7 +45,7 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <Button mnemonicParsing="false" onAction="#speedUp" text="Speed up">
+                  <Button fx:id="speedUpButton" mnemonicParsing="false" onAction="#speedUp" text="Speed up">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -70,7 +70,7 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <Button mnemonicParsing="false" onAction="#slowDown" text="Slow down">
+                  <Button fx:id="slowDownButton" mnemonicParsing="false" onAction="#slowDown" text="Slow down">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -161,7 +161,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </VBox>
-            <Button onAction="#onStart" text="Start">
+            <Button fx:id="startButton" onAction="#onStart" text="Start">
                <font>
                   <Font size="14.0" />
                </font>
@@ -169,7 +169,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onStop" text="Stop">
+            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#onStop" text="Stop">
                <font>
                   <Font size="14.0" />
                </font>
@@ -177,7 +177,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onResume" text="Resume">
+            <Button fx:id="resumeButton" mnemonicParsing="false" onAction="#onResume" text="Resume">
                <font>
                   <Font size="14.0" />
                </font>
@@ -185,7 +185,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </Button>
-            <Button layoutX="624.0" layoutY="30.0" mnemonicParsing="false" onAction="#onPause" text="Pause">
+            <Button fx:id="pauseButton" layoutX="624.0" layoutY="30.0" mnemonicParsing="false" onAction="#onPause" text="Pause">
                <font>
                   <Font size="14.0" />
                </font>
