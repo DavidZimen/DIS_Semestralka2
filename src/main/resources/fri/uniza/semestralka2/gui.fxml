@@ -205,19 +205,48 @@
       </FlowPane>
       <HBox prefHeight="958.0" prefWidth="1880.0">
          <children>
-            <TableView fx:id="customersTable" maxHeight="-Infinity" prefHeight="700.0" prefWidth="1002.0">
-              <columns>
-                <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
-                <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
-                  <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0" text="Arrival time" />
-                  <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="121.0" sortable="false" text="Order type" />
-                  <TableColumn fx:id="orderSize" editable="false" minWidth="79.0" prefWidth="102.0" sortable="false" text="Order size" />
-                  <TableColumn fx:id="serviceDesk" editable="false" minWidth="77.0" prefWidth="121.0" resizable="false" sortable="false" text="Service desk" />
-                  <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="56.0" prefWidth="101.0" resizable="false" sortable="false" text="Cash desk queue" />
-                  <TableColumn fx:id="chasDesk" editable="false" minWidth="55.0" prefWidth="104.0" resizable="false" sortable="false" text="Cash desk" />
-                  <TableColumn fx:id="currentState" editable="false" minWidth="51.0" prefWidth="127.0" resizable="false" sortable="false" text="Current state" />
-              </columns>
-            </TableView>
+            <VBox prefHeight="930.0" prefWidth="1005.0">
+               <children>
+                  <Label text="Customers">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="customersTable" maxHeight="-Infinity" prefHeight="700.0" prefWidth="133.0">
+                    <columns>
+                      <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
+                      <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
+                        <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0" text="Arrival time" />
+                        <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="121.0" sortable="false" text="Order type" />
+                        <TableColumn fx:id="orderSize" editable="false" minWidth="79.0" prefWidth="102.0" sortable="false" text="Order size" />
+                        <TableColumn fx:id="serviceDesk" editable="false" minWidth="77.0" prefWidth="121.0" resizable="false" sortable="false" text="Service desk" />
+                        <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="56.0" prefWidth="101.0" resizable="false" sortable="false" text="Cash desk queue" />
+                        <TableColumn fx:id="chasDesk" editable="false" minWidth="55.0" prefWidth="104.0" resizable="false" sortable="false" text="Cash desk" />
+                        <TableColumn fx:id="currentState" editable="false" minWidth="51.0" prefWidth="127.0" resizable="false" sortable="false" text="Current state" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <VBox prefHeight="930.0" prefWidth="478.0">
+               <children>
+                  <Label text="Employees">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="empTable" maxHeight="-Infinity" prefHeight="548.0" prefWidth="136.0">
+                    <columns>
+                      <TableColumn fx:id="empName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
+                      <TableColumn fx:id="queueLength" editable="false" prefWidth="96.0" sortable="false" text="QueueLength" />
+                        <TableColumn fx:id="workload" editable="false" prefWidth="117.0" sortable="false" text="Workload" />
+                        <TableColumn fx:id="empState" editable="false" prefWidth="104.0" sortable="false" text="Current state" />
+                    </columns>
+                  </TableView>
+               </children>
+               <HBox.margin>
+                  <Insets left="150.0" />
+               </HBox.margin>
+            </VBox>
          </children>
       </HBox>
    </children>

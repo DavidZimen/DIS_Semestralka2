@@ -14,8 +14,10 @@ import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
-import fri.uniza.semestralka2.simulation.objects.customer.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
+import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
+import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
+import fri.uniza.semestralka2.simulation.objects.dto.toDto
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
 import fri.uniza.semestralka2.simulation.statistics.OverallStats
@@ -271,6 +273,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     fun updateState() {
         with(simulationState as CompanySimulationState) {
             customers = source.map { it.toDto() }
+            employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() }
         }
     }
 
@@ -360,6 +363,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     inner class CompanySimulationState : EventSimulationState() {
-        var customers: List<CustomerDto> = emptyList()
+        var customers= emptyList<CustomerDto>()
+        var employees= emptyList<ServiceDto>()
     }
 }

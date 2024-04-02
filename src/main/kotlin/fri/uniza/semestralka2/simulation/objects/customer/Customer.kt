@@ -1,6 +1,5 @@
 package fri.uniza.semestralka2.simulation.objects.customer
 
-import fri.uniza.semestralka2.general_utils.secondsToLocalTime
 import fri.uniza.semestralka2.simulation.components.CashDesk
 import fri.uniza.semestralka2.simulation.components.ServingDesk
 import fri.uniza.semestralka2.simulation.objects.order.OrderSize
@@ -82,36 +81,4 @@ class Customer(probability: Double) {
      * Time when customer entered queue to cash desk.
      */
     var cashDeskStartTime = -1.0
-
-    /**
-     * Maps [Customer] to [CustomerDto].
-     */
-    fun toDto(): CustomerDto {
-        return CustomerDto(
-            "Customer $id",
-            systemStartTime.secondsToLocalTime().toString(),
-            type.toString(),
-            orderType?.toString() ?: "",
-            orderSize?.toString() ?: "",
-            serviceDesk?.name ?: "",
-            cashDeskQueue?.name ?: "",
-            cashDeskPaid?.name ?: "",
-            state.toString()
-        )
-    }
 }
-
-/**
- * Dto for transferring [Customer] data to GUI.
- */
-data class CustomerDto(
-    val name: String,
-    val arrivalTime: String,
-    val type: String,
-    val orderType: String,
-    val orderSize: String,
-    val serviceDesk: String,
-    val cashDeskQueue: String,
-    val cashDesk: String,
-    val state: String
-)

@@ -3,7 +3,8 @@ package fri.uniza.semestralka2.gui
 import fri.uniza.semestralka2.api.CompanySimulationApi
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
-import fri.uniza.semestralka2.simulation.objects.customer.CustomerDto
+import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
+import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -26,6 +27,7 @@ class GuiController : Initializable {
     private lateinit var speed: Label
     @FXML
     private lateinit var simulationTime: Label
+
     // TABLE CUSTOMERS
     private var customers = FXCollections.observableArrayList<CustomerDto>()
     @FXML
@@ -49,6 +51,20 @@ class GuiController : Initializable {
     @FXML
     private lateinit var currentState: TableColumn<CustomerDto, String>
 
+    // TABLE EMPLOYEES
+    private var employees = FXCollections.observableArrayList<ServiceDto>()
+    @FXML
+    private lateinit var empTable: TableView<ServiceDto>
+    @FXML
+    private lateinit var empName: TableColumn<ServiceDto, String>
+    @FXML
+    private lateinit var queueLength: TableColumn<ServiceDto, String>
+    @FXML
+    private lateinit var workload: TableColumn<ServiceDto, String>
+    @FXML
+    private lateinit var empState: TableColumn<ServiceDto, String>
+
+
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         customersTable.selectionModel.selectionMode = SelectionMode.SINGLE
         name.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
@@ -60,6 +76,12 @@ class GuiController : Initializable {
         chasDeskQueue.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDeskQueue) }
         chasDesk.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDesk) }
         currentState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
+
+        empTable.selectionModel.selectionMode = SelectionMode.SINGLE
+        empName.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
+        queueLength.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.queueLength) }
+        workload.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.workload) }
+        empState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
     }
 
     @FXML
@@ -102,8 +124,14 @@ class GuiController : Initializable {
             Platform.runLater {
                 val simState = state as CompanyEventSimulation.CompanySimulationState
                 simulationTime.text = "Time: ${simState.time}"
+
+                // customers
                 customers = FXCollections.observableArrayList(simState.customers)
                 customersTable.items = customers
+
+                //employees
+                employees = FXCollections.observableArrayList(simState.employees)
+                empTable.items = employees
             }
         }
     }

@@ -40,8 +40,8 @@ open class Service<T>(
     /**
      * Agent currently served by [Service].
      */
-    private var serving: T? = null
-        set(value) {
+    var serving: T? = null
+        private set(value) {
             state = if (value == null) State.FREE else State.OCCUPIED
             field = value
         }
