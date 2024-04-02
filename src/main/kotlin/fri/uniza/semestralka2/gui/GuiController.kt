@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2
+package fri.uniza.semestralka2.gui
 
 import javafx.fxml.FXML
 import javafx.scene.control.Label

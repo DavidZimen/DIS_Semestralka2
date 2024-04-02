@@ -47,7 +47,14 @@ class Observable<T> {
     /**
      * Removes observer with [name].
      */
-    fun removeObserver(name: String) {
+    fun unsubscribe(name: String) {
         observers.remove(name)
+    }
+
+    /**
+     * Removes all observers.
+     */
+    fun unsubscribe() {
+        observers.clear()
     }
 }

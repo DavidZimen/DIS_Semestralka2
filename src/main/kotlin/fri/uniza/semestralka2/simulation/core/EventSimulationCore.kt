@@ -57,7 +57,7 @@ open class EventSimulationCore : SimulationCore() {
      * For keeping changes until choosing to notify [simulationStateObservable] subscribers.
      * Attribute for [simulationTime] is automatically set at the end of [AbstractEvent] execution.
      */
-    open var simulationState = EventSimulationState()
+    open lateinit var simulationState: EventSimulationState
         protected set
 
     /**
@@ -263,7 +263,7 @@ open class EventSimulationCore : SimulationCore() {
      * Only in [Mode.SINGLE].
      */
     private inner class DelayEvent(time: Double) : AbstractEvent(time, this) {
-        override fun onExecute() {
+        override fun onExecuteEvent() {
             with(this@EventSimulationCore) {
                 scheduleDelayEvent()
                 Thread.sleep((DELAY_MILLIS / speed).toLong())

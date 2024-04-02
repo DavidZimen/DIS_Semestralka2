@@ -11,7 +11,19 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.10.0</junit.version><kotlin.version>1.8.22</kotlin.version>  </properties>
+    <junit.version>5.10.0</junit.version>
+    <kotlin.version>1.8.22</kotlin.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>Maven Central</id>
+      <url>https://repo.maven.apache.org/maven2/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -24,7 +36,6 @@
       <artifactId>javafx-fxml</artifactId>
       <version>21</version>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -56,6 +67,12 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core</artifactId>
+      <version>1.7.3</version>
+      <type>pom</type>
     </dependency>
   </dependencies>
 
@@ -92,7 +109,7 @@
           </execution>
         </executions>
       </plugin>
-<plugin>
+      <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
         <version>${kotlin.version}</version>
@@ -115,6 +132,7 @@
         <configuration>
           <jvmTarget>11</jvmTarget>
         </configuration>
-      </plugin>    </plugins>
+      </plugin>
+    </plugins>
   </build>
 </project>

@@ -1,15 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="fri.uniza.semestralka2.GuiController">
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="fri.uniza.semestralka2.gui.GuiController">
   <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
   </padding>
-
-  <Label fx:id="welcomeText"/>
-  <Button text="Hello!" onAction="#onHelloButtonClick"/>
+   <children>
+      <FlowPane prefHeight="50.0" prefWidth="1880.0">
+         <children>
+            <VBox prefHeight="50.0" prefWidth="114.0">
+               <children>
+                  <Label text="Replications:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="replications" prefHeight="30.0" prefWidth="181.0" text="20000">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="50.0" prefWidth="107.0">
+               <children>
+                  <Label text="Cash desks:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="cashDesksCount" prefHeight="30.0" prefWidth="181.0" text="6">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </VBox>
+            <VBox layoutX="189.0" layoutY="10.0" prefHeight="50.0" prefWidth="112.0">
+               <children>
+                  <Label text="Service desks:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="serviceDesksCount" prefHeight="30.0" prefWidth="181.0" text="15">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </VBox>
+            <VBox prefHeight="47.0" prefWidth="210.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="224.0" text="Open time:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Slider>
+                     <VBox.margin>
+                        <Insets top="7.0" />
+                     </VBox.margin>
+                  </Slider>
+               </children>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </VBox>
+            <VBox layoutX="245.0" layoutY="10.0" prefHeight="47.0" prefWidth="210.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="223.0" text="Last ticket time:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <Slider>
+                     <VBox.margin>
+                        <Insets top="7.0" />
+                     </VBox.margin>
+                  </Slider>
+               </children>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </VBox>
+            <VBox prefHeight="50.0" prefWidth="179.0">
+               <children>
+                  <Label prefHeight="20.0" prefWidth="202.0" text="Mode:">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="25.0" prefWidth="151.0">
+                     <children>
+                        <RadioButton fx:id="modeS" mnemonicParsing="false" onAction="#changeMode" selected="true" text="Single">
+                           <HBox.margin>
+                              <Insets left="5.0" top="2.0" />
+                           </HBox.margin>
+                           <toggleGroup>
+                              <ToggleGroup fx:id="heightPos" />
+                           </toggleGroup>
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="modeR" mnemonicParsing="false" onAction="#cgangeMode" text="Replications" toggleGroup="$heightPos">
+                           <HBox.margin>
+                              <Insets left="8.0" top="2.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="2.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </VBox>
+            <Button onAction="#onStart" text="Start">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#onStop" text="Stop">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#onCut" text="Pause">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </Button>
+            <Button layoutX="624.0" layoutY="30.0" mnemonicParsing="false" onAction="#onCut" text="Pause">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="25.0" />
+               </FlowPane.margin>
+            </Button>
+            <Label fx:id="simulationTime" text="Time: ">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets left="150.0" />
+               </FlowPane.margin>
+            </Label>
+         </children>
+      </FlowPane>
+      <HBox prefHeight="958.0" prefWidth="1880.0">
+         <children>
+            <TableView fx:id="customersTable" maxHeight="-Infinity" prefHeight="700.0" prefWidth="900.0">
+              <columns>
+                <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
+                <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
+                  <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0" text="Arrival time" />
+                  <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order type" />
+                  <TableColumn fx:id="orderSize" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order size" />
+                  <TableColumn fx:id="serviceDesk" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Service desk" />
+                  <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Cash desk queue" />
+                  <TableColumn fx:id="chasDesk" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Cash desk" />
+                  <TableColumn fx:id="currentState" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Current state" />
+              </columns>
+            </TableView>
+         </children>
+      </HBox>
+   </children>
 </VBox>

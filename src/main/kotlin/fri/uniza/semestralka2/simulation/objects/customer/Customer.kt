@@ -19,12 +19,12 @@ class Customer(probability: Double) {
     /**
      * Time printed on the ticket by machine.
      */
-    var ticketTime = 0.0
+    var ticketTime = -1.0
 
     /**
      * Type of the customer.
      */
-    val type: CustomerType
+    val type: CustomerType = CustomerType.retrieveType(probability)
 
     /**
      * State of the customer in the simulation.
@@ -81,8 +81,4 @@ class Customer(probability: Double) {
      * Time when customer entered queue to cash desk.
      */
     var cashDeskStartTime = -1.0
-
-    init {
-        type = CustomerType.retrieveType(probability)
-    }
 }

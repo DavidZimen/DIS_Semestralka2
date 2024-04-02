@@ -139,11 +139,16 @@ open class Service<T>(
 
         private var totalArea = 0.0
 
-        private var lastValue = state to core.simulationTime
+        private var lastValue: Pair<State, Double>? = null
 
         fun calculateWorkFlow() {
-            val timeDifference = core.simulationTime - lastValue.second
-            totalArea += timeDifference / 2 * (state.value + lastValue.first.value)
+            if (lastValue == null) {
+                lastValue = state to core.simulationTime
+                return
+            }
+
+            val timeDifference = core.simulationTime - lastValue!!.second
+            totalArea += timeDifference / 2 * (state.value + lastValue!!.first.value)
             averageWorkload = totalArea / core.simulationTime
             lastValue = state to core.simulationTime
         }

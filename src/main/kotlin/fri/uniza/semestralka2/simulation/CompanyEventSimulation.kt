@@ -10,6 +10,7 @@ import fri.uniza.semestralka2.simulation.components.ServingDesk
 import fri.uniza.semestralka2.simulation.components.ServingDeskQueue
 import fri.uniza.semestralka2.simulation.components.TicketMachine
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
+import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
@@ -211,6 +212,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     // OVERRIDE FUNCTIONS
     override fun beforeSimulation() {
         overallStats.reset()
+        simulationState = CompanySimulationState()
         initGenerators()
     }
 
@@ -265,6 +267,12 @@ class CompanyEventSimulation : EventSimulationCore() {
      * @return [Generator] from [paymentTimeGenerators] based on [type] parameter.
      */
     fun getPaymentTimeGenerator(type: PaymentType) = paymentTimeGenerators[type]!!
+
+    fun updateState() {
+        with(simulationState as CompanySimulationState) {
+            customers = source
+        }
+    }
 
     // PRIVATE FUNCTIONS
     /**
@@ -340,5 +348,9 @@ class CompanyEventSimulation : EventSimulationCore() {
         overallStats.ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
         overallStats.lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
         overallStats.customersServed.addEntry(replicationStats.customersServed)
+    }
+
+    inner class CompanySimulationState : EventSimulationState() {
+        var customers: List<Customer> = emptyList()
     }
 }
