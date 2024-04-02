@@ -2,10 +2,9 @@ package fri.uniza.semestralka2.gui
 
 import fri.uniza.semestralka2.general_utils.DOUBLE_REGEX
 import fri.uniza.semestralka2.general_utils.INTEGER_REGEX
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.ProgressIndicator
-import javafx.scene.control.TextField
+import fri.uniza.semestralka2.general_utils.toMinutes
+import javafx.scene.control.*
+import java.time.LocalTime
 
 
 fun TextField.allowOnlyDouble() {
@@ -35,4 +34,11 @@ fun Button.disable(disable: Boolean = true) {
 
 fun TextField.disable(disable: Boolean = true) {
     isDisable = disable
+}
+
+fun Slider.init(time: LocalTime) {
+    min = LocalTime.of(0, 0).toMinutes()
+    max = LocalTime.of(23, 59).toMinutes()
+    value = time.toMinutes()
+    blockIncrement = 5.0
 }

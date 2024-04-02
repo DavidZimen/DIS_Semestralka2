@@ -1,6 +1,7 @@
 package fri.uniza.semestralka2.gui
 
 import fri.uniza.semestralka2.api.CompanySimulationApi
+import fri.uniza.semestralka2.general_utils.minutesToLocalTime
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.EventSimulationMode
@@ -18,6 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import java.net.URL
+import java.time.LocalTime
 import java.util.*
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -37,6 +39,14 @@ class GuiController : Initializable {
     private lateinit var simulationTime: Label
     @FXML
     private lateinit var modeR: RadioButton
+    @FXML
+    private lateinit var openTime: Slider
+    @FXML
+    private lateinit var openTimeLabel: Label
+    @FXML
+    private lateinit var lastTicketTime: Slider
+    @FXML
+    private lateinit var lastTicketLabel: Label
 
     // BUTTONS
     @FXML
@@ -113,6 +123,15 @@ class GuiController : Initializable {
 
         stateDisabling(SimulationState.STOPPED)
         changeMode()
+
+        lastTicketTime.valueProperty().addListener { _, _, new ->
+            lastTicketLabel.text = "Last ticket time: ${new.toDouble().minutesToLocalTime()}"
+        }
+        openTime.valueProperty().addListener { _, _, new ->
+            openTimeLabel.text = "Open time: ${new.toDouble().minutesToLocalTime()}"
+        }
+        openTime.init(LocalTime.of(9, 30))
+        lastTicketTime.init(LocalTime.of(17, 0))
     }
 
     @FXML

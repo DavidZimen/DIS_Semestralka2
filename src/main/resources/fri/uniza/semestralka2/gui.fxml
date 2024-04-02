@@ -85,12 +85,12 @@
             </VBox>
             <VBox prefHeight="47.0" prefWidth="210.0">
                <children>
-                  <Label prefHeight="20.0" prefWidth="224.0" text="Open time:">
+                  <Label fx:id="openTimeLabel" prefHeight="20.0" prefWidth="224.0" text="Open time:">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Slider>
+                  <Slider fx:id="openTime">
                      <VBox.margin>
                         <Insets top="7.0" />
                      </VBox.margin>
@@ -102,7 +102,7 @@
             </VBox>
             <VBox layoutX="245.0" layoutY="10.0" prefHeight="47.0" prefWidth="210.0">
                <children>
-                  <Label prefHeight="20.0" prefWidth="223.0" text="Last ticket time:">
+                  <Label fx:id="lastTicketLabel" prefHeight="20.0" prefWidth="223.0" text="Last ticket time:">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -110,7 +110,7 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <Slider>
+                  <Slider fx:id="lastTicketTime">
                      <VBox.margin>
                         <Insets top="7.0" />
                      </VBox.margin>

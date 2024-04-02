@@ -64,6 +64,13 @@ fun Double.secondsToLocalTime(): LocalTime {
     return LocalTime.of(hours, minutes, seconds)
 }
 
+fun Double.minutesToLocalTime(): LocalTime {
+    val minutes = this.toInt()
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+    return LocalTime.of(hours, remainingMinutes)
+}
+
 fun Double.hoursToMinutes() = this * MINUTES_PER_HOUR
 
 fun Double.hoursToSeconds() = this.hoursToMinutes().minutesToSeconds()
