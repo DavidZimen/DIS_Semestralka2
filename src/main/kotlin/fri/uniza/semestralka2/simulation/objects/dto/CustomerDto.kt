@@ -1,5 +1,6 @@
 package fri.uniza.semestralka2.simulation.objects.dto
 
+import fri.uniza.semestralka2.general_utils.format
 import fri.uniza.semestralka2.general_utils.secondsToLocalTime
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 
@@ -23,7 +24,7 @@ data class CustomerDto(
  */
 fun Customer.toDto() = CustomerDto(
     "Customer $id",
-    systemStartTime.secondsToLocalTime().toString(),
+    systemStartTime.secondsToLocalTime().format(),
     type.toString(),
     orderType?.toString() ?: "",
     orderSize?.toString() ?: "",

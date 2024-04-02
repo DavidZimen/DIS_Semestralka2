@@ -1,6 +1,7 @@
 package fri.uniza.semestralka2.gui
 
 import fri.uniza.semestralka2.api.CompanySimulationApi
+import fri.uniza.semestralka2.general_utils.format
 import fri.uniza.semestralka2.general_utils.minutesToLocalTime
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
@@ -175,7 +176,7 @@ class GuiController : Initializable {
         simulationApi.observeSimulation("observer") { state ->
             Platform.runLater {
                 val simState = state as CompanyEventSimulation.CompanySimulationState
-                simulationTime.text = "Time: ${simState.time}"
+                simulationTime.text = "Time: ${simState.time.format()}"
 
                 // customers
                 customers = FXCollections.observableArrayList(simState.customers)

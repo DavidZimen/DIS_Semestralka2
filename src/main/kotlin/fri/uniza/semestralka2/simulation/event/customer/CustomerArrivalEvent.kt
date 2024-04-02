@@ -9,7 +9,7 @@ import fri.uniza.semestralka2.simulation.objects.customer.Customer
 
 /**
  * Generates new customer for [CompanyEventSimulation].
- * Schedules new [CustomerArrivalEvent] if [CompanyEventSimulation.automatClosingTime] is not exceeded.
+ * Schedules new [CustomerArrivalEvent] if [CompanyEventSimulation.ticketMachineClosingTime] is not exceeded.
  * Schedules [PrintTicketStartEvent] or adds [Customer] to [CompanyEventSimulation.ticketMachine] queue.
  */
 class CustomerArrivalEvent(time: Double, core: CompanyEventSimulation) : CompanyEvent(time, core) {
@@ -27,7 +27,7 @@ class CustomerArrivalEvent(time: Double, core: CompanyEventSimulation) : Company
 
         // schedule new arrival if ticket machine is operating
         val arrivalTime = time + core.arrivalGenerator.sample().minutesToSeconds()
-        if (isALessThanB(arrivalTime, core.automatClosingTime)) {
+        if (isALessThanB(arrivalTime, core.ticketMachineClosingTime)) {
             core.scheduleEvent(CustomerArrivalEvent(arrivalTime, core))
         }
     }

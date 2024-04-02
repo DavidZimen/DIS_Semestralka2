@@ -26,7 +26,7 @@ class PrintTicketStartEvent(
 
     private fun startTicketPrinting(customer: Customer) {
         val endTime = time + core.ticketMachineGenerator.sample()
-        if (isAGreaterThanB(endTime, core.automatClosingTime)) {
+        if (isAGreaterThanB(endTime, core.ticketMachineClosingTime)) {
             core.ticketMachine.removeAll()
         } else {
             core.ticketMachine.startServing(customer)

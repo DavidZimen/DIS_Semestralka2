@@ -12,13 +12,13 @@ import fri.uniza.semestralka2.simulation.components.TicketMachine
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
-import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerSequence
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
 import fri.uniza.semestralka2.simulation.objects.dto.toDto
+import fri.uniza.semestralka2.simulation.objects.order.OrderSize
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
 import fri.uniza.semestralka2.simulation.statistics.OverallStats
@@ -34,7 +34,7 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     // SERVICES COUNT
     /**
-     * Number of [ServiceDesk] in simulation.
+     * Number of [ServingDesk] in simulation.
      */
     var serviceDeskCount = 15
         set(value) {
@@ -70,7 +70,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Time when the ticket machine will no longer print new tickets,
      */
-    var automatClosingTime = LocalTime.of(17, 0).toSeconds()
+    var ticketMachineClosingTime = LocalTime.of(17, 0).toSeconds()
         private set
 
     // GENERATORS
@@ -189,7 +189,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     private var sink = mutableListOf<Customer>()
 
     /**
-     * [Customer]s, that were not served because [simulationTime] is passed [automatClosingTime].
+     * [Customer]s, that were not served because [simulationTime] is passed [ticketMachineClosingTime].
      */
     private var ticketMachineSink = mutableListOf<Customer>()
 
@@ -238,7 +238,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     /**
-     * Sets the new value of [closingTime] to [time] transformed to seconds.
+     * Sets the new value of [simulationEndTime] to [time] transformed to seconds.
      */
     fun setClosingTime(time: LocalTime) {
         simulationRunningCheck()
@@ -246,11 +246,11 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     /**
-     * Sets the new value of [automatClosingTime] to [time] transformed to seconds.
+     * Sets the new value of [ticketMachineClosingTime] to [time] transformed to seconds.
      */
-    fun setAutomatClosingTime(time: LocalTime) {
+    fun setTicketMachineClosingTime(time: LocalTime) {
         simulationRunningCheck()
-        automatClosingTime = time.toSeconds()
+        ticketMachineClosingTime = time.toSeconds()
     }
 
     /**
