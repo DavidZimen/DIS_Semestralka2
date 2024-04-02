@@ -16,7 +16,7 @@ class CustomerArrivalEvent(time: Double, core: CompanyEventSimulation) : Company
     override fun onExecute() {
         val typeProb = core.customerTypeGenerator.sample()
         val customer = Customer(typeProb).apply { systemStartTime = time }
-        core.source.add(customer)
+        core.moveToSource(customer)
 
         val ticketMachine = core.ticketMachine
         if (ticketMachine.isOccupied || !core.serviceDeskQueue.canAdd()) {

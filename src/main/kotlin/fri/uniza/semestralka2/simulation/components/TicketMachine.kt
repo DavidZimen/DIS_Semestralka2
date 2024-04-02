@@ -40,6 +40,6 @@ class TicketMachine(
             it.state = CustomerState.LEFT_TICKET_MACHINE
             // TODO statistics to ticket machine queue time and queue length
         }
-        core.ticketMachineSink.addAll(removedList)
+        core.moveToTicketMachineSink(removedList)
     }
 }

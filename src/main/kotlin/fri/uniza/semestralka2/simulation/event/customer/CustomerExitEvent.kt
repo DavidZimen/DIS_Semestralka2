@@ -16,6 +16,6 @@ class CustomerExitEvent(
         core.replicationStats.systemTime.addEntry(time - customer.systemStartTime)
         core.replicationStats.lastCustomerExit = time
         core.replicationStats.customersServed++
-        core.sink.add(customer)
+        core.moveToSink(customer)
     }
 }

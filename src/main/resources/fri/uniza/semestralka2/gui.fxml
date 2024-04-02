@@ -4,25 +4,33 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="fri.uniza.semestralka2.gui.GuiController">
+<VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fri.uniza.semestralka2.gui.GuiController">
   <padding>
     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
   </padding>
    <children>
-      <FlowPane prefHeight="50.0" prefWidth="1880.0">
+      <FlowPane prefHeight="115.0" prefWidth="1880.0">
          <children>
-            <VBox prefHeight="50.0" prefWidth="114.0">
+            <VBox prefHeight="87.0" prefWidth="114.0">
                <children>
                   <Label text="Replications:">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="replications" prefHeight="30.0" prefWidth="181.0" text="20000">
+                  <TextField fx:id="replications" prefHeight="30.0" prefWidth="114.0" text="20000">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
+                  <Label fx:id="speed" text="Speed: 1x">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="12.0" />
+                     </VBox.margin>
+                  </Label>
                </children>
             </VBox>
             <VBox layoutX="10.0" layoutY="10.0" prefHeight="50.0" prefWidth="107.0">
@@ -37,6 +45,14 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
+                  <Button mnemonicParsing="false" onAction="#speedUp" text="Speed up">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
                <FlowPane.margin>
                   <Insets left="25.0" />
@@ -54,6 +70,14 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
+                  <Button mnemonicParsing="false" onAction="#slowDown" text="Slow down">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
                <FlowPane.margin>
                   <Insets left="25.0" />
@@ -119,7 +143,7 @@
                               <Font size="13.0" />
                            </font>
                         </RadioButton>
-                        <RadioButton fx:id="modeR" mnemonicParsing="false" onAction="#cgangeMode" text="Replications" toggleGroup="$heightPos">
+                        <RadioButton fx:id="modeR" mnemonicParsing="false" onAction="#changeMode" text="Replications" toggleGroup="$heightPos">
                            <HBox.margin>
                               <Insets left="8.0" top="2.0" />
                            </HBox.margin>
@@ -153,7 +177,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onCut" text="Pause">
+            <Button mnemonicParsing="false" onAction="#onResume" text="Resume">
                <font>
                   <Font size="14.0" />
                </font>
@@ -161,7 +185,7 @@
                   <Insets left="25.0" />
                </FlowPane.margin>
             </Button>
-            <Button layoutX="624.0" layoutY="30.0" mnemonicParsing="false" onAction="#onCut" text="Pause">
+            <Button layoutX="624.0" layoutY="30.0" mnemonicParsing="false" onAction="#onPause" text="Pause">
                <font>
                   <Font size="14.0" />
                </font>

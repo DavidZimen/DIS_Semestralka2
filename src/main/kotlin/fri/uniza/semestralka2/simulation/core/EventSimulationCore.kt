@@ -58,7 +58,6 @@ open class EventSimulationCore : SimulationCore() {
      * Attribute for [simulationTime] is automatically set at the end of [AbstractEvent] execution.
      */
     open lateinit var simulationState: EventSimulationState
-        protected set
 
     /**
      * Indication if simulation is stopped by user.

@@ -1,7 +1,9 @@
 package fri.uniza.semestralka2.api
 
+import fri.uniza.semestralka2.observer.Observer
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
+import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -84,5 +86,28 @@ class CompanySimulationApi private constructor() {
     fun slowDownSimulation(): Double {
         simulation.slowDownSimulation()
         return simulation.speed
+    }
+
+    /**
+     * Adds observer for [simulation] state.
+     */
+    fun observeSimulation(name: String, observer: Observer<EventSimulationState>) {
+        simulation.simulationStateObservable.subscribe(name, observer)
+    }
+
+    /**
+     * Adds observer for [simulation] state.
+     */
+    fun stopObservingSimulation(name: String) {
+        simulation.simulationStateObservable.unsubscribe(name)
+    }
+
+    companion object {
+        /**
+         * Provides single instance of [CompanySimulationApi] to whole application scope.
+         */
+        val instance: CompanySimulationApi by lazy {
+            CompanySimulationApi()
+        }
     }
 }

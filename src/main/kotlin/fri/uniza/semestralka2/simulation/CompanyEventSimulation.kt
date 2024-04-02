@@ -14,6 +14,7 @@ import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.*
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
+import fri.uniza.semestralka2.simulation.objects.customer.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
 import fri.uniza.semestralka2.simulation.objects.order.OrderType
 import fri.uniza.semestralka2.simulation.objects.order.PaymentType
@@ -183,20 +184,17 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * [Customer]s that arrived in the company.
      */
-    var source = mutableListOf<Customer>()
-        private set
+    private var source = mutableListOf<Customer>()
 
     /**
      * Served and left [Customer]s.
      */
-    var sink = mutableListOf<Customer>()
-        private set
+    private var sink = mutableListOf<Customer>()
 
     /**
      * [Customer]s, that were not served because [simulationTime] is passed [automatClosingTime].
      */
-    var ticketMachineSink = mutableListOf<Customer>()
-        private set
+    private var ticketMachineSink = mutableListOf<Customer>()
 
     //STATISTICS
     /**
@@ -268,11 +266,23 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     fun getPaymentTimeGenerator(type: PaymentType) = paymentTimeGenerators[type]!!
 
+    /**
+     * Updates [simulationState] with new values.
+     */
     fun updateState() {
         with(simulationState as CompanySimulationState) {
-            customers = source
+            customers = source.map { it.toDto() }
         }
     }
+
+    /**
+     * Adds all elements from [removedList] to [ticketMachineSink]
+     */
+    fun moveToTicketMachineSink(removedList: List<Customer>) = ticketMachineSink.addAll(removedList)
+
+    fun moveToSource(customer: Customer) = source.add(customer)
+
+    fun moveToSink(customer: Customer) = sink.add(customer)
 
     // PRIVATE FUNCTIONS
     /**
@@ -351,6 +361,6 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     inner class CompanySimulationState : EventSimulationState() {
-        var customers: List<Customer> = emptyList()
+        var customers: List<CustomerDto> = emptyList()
     }
 }
