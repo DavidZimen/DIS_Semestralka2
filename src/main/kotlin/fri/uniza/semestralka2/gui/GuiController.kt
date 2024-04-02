@@ -36,8 +36,6 @@ class GuiController : Initializable {
     @FXML
     private lateinit var simulationTime: Label
     @FXML
-    private lateinit var modeS: RadioButton
-    @FXML
     private lateinit var modeR: RadioButton
 
     // BUTTONS
