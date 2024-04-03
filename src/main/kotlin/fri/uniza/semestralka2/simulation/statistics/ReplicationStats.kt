@@ -9,6 +9,12 @@ class ReplicationStats {
     var ticketQueueTime = DiscreteStatistic()
         private set
 
+    var cashDeskQueueTime =  DiscreteStatistic()
+        private set
+
+    var servingDeskQueueTime = DiscreteStatistic()
+        private set
+
     var lastCustomerExit = 0.0
 
     var customersServed = 0
@@ -16,6 +22,8 @@ class ReplicationStats {
     fun reset() {
         systemTime = DiscreteStatistic()
         ticketQueueTime = DiscreteStatistic()
+        cashDeskQueueTime = DiscreteStatistic()
+        servingDeskQueueTime = DiscreteStatistic()
         lastCustomerExit = 0.0
         customersServed = 0
     }

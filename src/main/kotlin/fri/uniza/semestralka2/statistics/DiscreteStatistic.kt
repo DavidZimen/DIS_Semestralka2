@@ -8,61 +8,25 @@ import kotlin.math.sqrt
  * Provides mean, variance standard deviation, min and max value.
  * @author David Zimen
  */
-class DiscreteStatistic {
-
-    /**
-     * Average value of all values added into data set.
-     */
-    var mean = 0.0
-        private set
-
-    /**
-     * Variance of the data set.
-     */
-    var variance = 0.0
-        private set
-
-    /**
-     * Standard deviation in data set/
-     */
-    var standardDeviation = 0.0
-        private set
-
-    /**
-     * Maximum value from data set.
-     */
-    var max = Double.MIN_VALUE
-        private set
-
-    /**
-     * Minimum value from data set.
-     */
-    var min = Double.MAX_VALUE
-        private set
+class DiscreteStatistic : Statistic() {
 
     /**
      * Last value added to data set.
      */
-    private var lastValue: Number = 0
-
-    /**
-     * Number of elements in data set.
-     */
-    private var count: Long = 1
+    private var lastValue: Double = 0.0
 
     /**
      * Adds [sample] to data set and recalculates all variables.
      */
     fun addEntry(sample: Number) {
-        val sampleDouble = sample.toDouble()
-        lastValue = sample
+        lastValue = sample.toDouble()
         count++
 
-        if (sampleDouble < min)
-            min = sampleDouble
+        if (lastValue < min)
+            min = lastValue
 
-        if (sampleDouble > max)
-            max = sampleDouble
+        if (lastValue > max)
+            max = lastValue
 
         calculateVariance()
         calculateMean()
@@ -70,14 +34,20 @@ class DiscreteStatistic {
     }
 
     private fun calculateMean() {
-        mean = ((mean * (count - 1)) + lastValue.toDouble()) / count
+        mean = ((mean * (count - 1)) + lastValue) / count
     }
 
     private fun calculateVariance() {
-        variance = ((count - 1) / count.toDouble()) * (variance + ((lastValue.toDouble() - mean).pow(2) / (count - 1)))
+        variance = ((count - 1) / count.toDouble()) * (variance + ((lastValue - mean).pow(2) / (count - 1)))
     }
 
     private fun calculateStandardDeviation() {
         standardDeviation = sqrt(variance)
+    }
+
+    override fun toString(): String {
+        return "\nMean: $mean" +
+                "\nVariance: $variance" +
+                "\nStandard deviation: $standardDeviation"
     }
 }

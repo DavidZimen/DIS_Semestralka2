@@ -14,8 +14,10 @@ import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
  */
 open class CashDesk(
     name: String,
+    servingStart: Double,
+    servingEnd: Double,
     override val core: CompanyEventSimulation
-) : Service<Customer>(name, core) {
+) : Service<Customer>(name, servingStart, servingEnd, core) {
 
     @Throws(IllegalStateException::class)
     override fun onServingStart(agent: Customer) {
@@ -42,13 +44,19 @@ open class CashDesk(
         }
 
         with(agent) {
-            cashDeskStartTime = core.simulationTime
+            cashDeskQueueStartTime = core.simulationTime
             cashDeskQueue = this@CashDesk
             state = CustomerState.WAITING_FOR_PAY
         }
+
+        super.onQueueAdd(agent)
     }
 
     override fun onQueueRemove(agent: Customer) {
-        // TODO add to statistics in core
+        if (agent.cashDeskQueueStartTime == -1.0) {
+            core.replicationStats.cashDeskQueueTime.addEntry(0)
+        } else {
+            core.replicationStats.cashDeskQueueTime.addEntry(core.simulationTime - agent.cashDeskQueueStartTime)
+        }
     }
 }

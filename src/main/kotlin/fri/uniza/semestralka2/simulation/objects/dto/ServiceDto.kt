@@ -20,7 +20,7 @@ data class ServiceDto(
  */
 fun <T> Service<T>.toDto() = ServiceDto(
     name,
-    queueLength.toString(),
+    queueStats.mean.round(3).toString(),
     state.toString(),
     workload.averageWorkload.round(3, RoundingMode.HALF_UP).toString()
 )

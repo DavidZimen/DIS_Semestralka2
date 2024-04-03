@@ -18,12 +18,14 @@ class Semestralka2 : Application() {
 fun main() {
     Application.launch(Semestralka2::class.java)
 //    with(CompanyEventSimulation()) {
-//        mode = EventSimulationCore.Mode.SINGLE
-//        simulationStateObservable.subscribe("Random") { state ->
-//            println("\r${(state as CompanyEventSimulation.CompanySimulationState).customers.size}")
-//        }
-//        speedUpSimulation()
-//        replicationsCount = 1
+////        mode = EventSimulationCore.Mode.SINGLE
+////        simulationStateObservable.subscribe("Random") { state ->
+////            println("\r${(state as CompanyEventSimulation.CompanySimulationState).customers.size}")
+////        }
+////        speedUpSimulation()
+//        replicationsCount = 25000
+//        cashDeskCount = 1
+//        serviceDeskCount = 2
 //        runSimulation()
 //    }
 }

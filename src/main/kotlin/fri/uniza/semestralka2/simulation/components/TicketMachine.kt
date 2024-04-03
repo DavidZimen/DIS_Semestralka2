@@ -11,8 +11,10 @@ import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
  */
 class TicketMachine(
     name: String,
+    servingStart: Double,
+    servingEnd: Double,
     override val core: CompanyEventSimulation
-) : Service<Customer>(name, core) {
+) : Service<Customer>(name, servingStart, servingEnd, core) {
 
     override fun onServingStart(agent: Customer) {
         agent.state = CustomerState.PRINTING_TICKET
@@ -24,21 +26,18 @@ class TicketMachine(
 
     override fun onQueueAdd(agent: Customer) {
         with(agent) {
-            automatStartTime = core.simulationTime
+            ticketMachineQueueStartTime = core.simulationTime
             state = CustomerState.WAITING_FOR_TICKET
         }
-        // TODO queue length stats
     }
 
     override fun onQueueRemove(agent: Customer) {
-        core.replicationStats.ticketQueueTime.addEntry(core.simulationTime - agent.automatStartTime)
-        // TODO queue length stats
+        core.replicationStats.ticketQueueTime.addEntry(core.simulationTime - agent.ticketMachineQueueStartTime)
     }
 
     override fun onRemovedElements(removedList: List<Customer>) {
         removedList.forEach {
             it.state = CustomerState.LEFT_TICKET_MACHINE
-            // TODO statistics to ticket machine queue time and queue length
         }
         core.moveToTicketMachineSink(removedList)
     }

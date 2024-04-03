@@ -5,12 +5,16 @@ import fri.uniza.semestralka2.simulation.event.service_desk.CustomerServingStart
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
+import fri.uniza.semestralka2.statistics.ContinuousStatistic
 import java.util.*
 
 /**
  * @author David Zimen
  */
 class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val core: CompanyEventSimulation) {
+
+    var stats = ContinuousStatistic()
+        private set
 
     private val baseQueue = PriorityQueue(compareBy<Customer> { it.type }.thenBy { it.ticketTime } )
 
@@ -28,7 +32,7 @@ class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val c
         }
 
         customer.state = CustomerState.WAITING_FOR_SERVING
-        customer.servingDeskStartTime = core.simulationTime
+        customer.servingDeskQueueStartTime = core.simulationTime
 
         // schedule serving if customer can be served right away
         for (serviceDesk in core.serviceDesks) {
@@ -37,6 +41,7 @@ class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val c
                 break
             }
         }
+        stats.addEntry(baseQueue.size + onlineQueue.size, core.simulationTime)
     }
 
     fun remove(type: CustomerType): Customer? {
@@ -45,8 +50,14 @@ class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val c
             else -> baseQueue.poll()
         }
 
-        if (customer != null) {
-            // TODO add to core stats
+        // add statistics
+        stats.addEntry(baseQueue.size + onlineQueue.size, core.simulationTime)
+        customer?.let {
+            if (customer.servingDeskQueueStartTime == -1.0) {
+                core.replicationStats.servingDeskQueueTime.addEntry(0)
+            } else {
+                core.replicationStats.servingDeskQueueTime.addEntry(core.simulationTime - customer.servingDeskQueueStartTime)
+            }
         }
 
         return customer

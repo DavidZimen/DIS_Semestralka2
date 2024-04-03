@@ -13,9 +13,11 @@ import fri.uniza.semestralka2.simulation.objects.order.OrderType
  */
 class ServingDesk(
     name: String,
+    servingStart: Double,
+    servingEnd: Double,
     val allowed: Array<CustomerType>,
     override val core: CompanyEventSimulation
-) : Service<Customer>(name, core) {
+) : Service<Customer>(name,servingStart, servingEnd, core) {
 
     override fun onServingStart(agent: Customer) {
         with(agent) {

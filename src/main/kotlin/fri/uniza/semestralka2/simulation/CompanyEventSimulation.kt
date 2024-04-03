@@ -170,12 +170,14 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Places where [Customer] dictate and receives his order.
      */
-    val serviceDesks = mutableListOf<ServingDesk>()
+    lateinit var serviceDesks: List<ServingDesk>
+        private set
 
     /**
      * Places where [Customer]s pay for their order.
      */
-    val cashDesks = mutableListOf<CashDesk>()
+    lateinit var cashDesks: List<CashDesk>
+        private set
 
     // SOURCE and SINKS
     /**
@@ -267,11 +269,11 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Updates [simulationState] with new values.
      */
     override fun updateSimulationState() {
+        super.updateSimulationState()
         with(simulationState as CompanySimulationState) {
             customers = source.map { it.toDto() }
-            employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() }
+            employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() } + ticketMachine.toDto()
         }
-        super.updateSimulationState()
     }
 
     /**
@@ -321,27 +323,47 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     private fun initServices() {
         // service desks
-        serviceDesks.clear()
-        val online = (serviceDeskCount / 3.0).round(0, RoundingMode.FLOOR).toInt()
-        val other = serviceDeskCount - online
-        for (i in 0 until online) {
-            serviceDesks.add(ServingDesk("Service desk online ${i + 1}", arrayOf(CustomerType.ONLINE), this))
+        var onlineCount = (serviceDeskCount / 3.0).round(0, RoundingMode.FLOOR).toInt()
+        var otherCount = serviceDeskCount - onlineCount
+        if (onlineCount == 0) {
+            onlineCount = 1
+            otherCount--
         }
-        for (i in 0 until other) {
-            serviceDesks.add(ServingDesk("Service desk ${i + 1}", arrayOf(CustomerType.COMMON, CustomerType.CONTRACTED), this))
+        val online = (1..onlineCount).toList().map {
+            ServingDesk(
+                "Service desk online $it",
+                openTime,
+                simulationEndTime,
+                arrayOf(CustomerType.ONLINE),
+                this
+            )
         }
-
-        // cash desks
-        cashDesks.clear()
-        for (i in 0 until cashDeskCount) {
-            cashDesks.add(CashDesk("Cash desk ${i + 1}", this))
+        val other = (1..otherCount).toList().map {
+            ServingDesk(
+                "Service desk $it",
+                openTime,
+                simulationEndTime,
+                arrayOf(CustomerType.COMMON, CustomerType.CONTRACTED),
+                this
+            )
         }
+        serviceDesks = online + other
 
         // service desks queue
         serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, this)
 
+        // cash desks
+        cashDesks = (1..cashDeskCount).toList().map {
+            CashDesk(
+                "Cash desk $it",
+                openTime,
+                simulationEndTime,
+                this
+            )
+        }
+
         // ticket machine
-        ticketMachine = TicketMachine("Ticket machine", this)
+        ticketMachine = TicketMachine("Ticket machine", openTime, ticketMachineClosingTime, this)
 
         // source and sinks
         source.clear()
@@ -353,10 +375,15 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Adds single replication statistic into [overallStats].
      */
     private fun addToOverallStats() {
-        overallStats.systemTime.addEntry(replicationStats.systemTime.mean)
-        overallStats.ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
-        overallStats.lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
-        overallStats.customersServed.addEntry(replicationStats.customersServed)
+        with(overallStats) {
+            systemTime.addEntry(replicationStats.systemTime.mean)
+            ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
+            ticketQueueLength.addEntry(ticketMachine.queueStats.mean)
+            serviceQueueLength.addEntry(serviceDeskQueue.stats.mean)
+            cashDeskQueueTime.addEntry(replicationStats.cashDeskQueueTime.mean)
+            lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
+            customersServed.addEntry(replicationStats.customersServed)
+        }
     }
 
     inner class CompanySimulationState : EventSimulationState() {

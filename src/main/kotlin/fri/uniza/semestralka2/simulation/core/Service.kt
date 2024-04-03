@@ -1,5 +1,6 @@
 package fri.uniza.semestralka2.simulation.core
 
+import fri.uniza.semestralka2.statistics.ContinuousStatistic
 import java.util.*
 
 /**
@@ -12,16 +13,35 @@ open class Service<T>(
     val name: String,
 
     /**
+     * Time from when the [Service] should be active.
+     */
+    var servingStartTime: Double,
+
+    /**
+     * Time until when the [Service] should be active.
+     */
+    var servingEndTime: Double,
+
+    /**
      * [EventSimulationCore] to which the [Service] belongs.
      */
     protected open val core: EventSimulationCore
 ) {
+    /**
+     * Current length of the [queue].
+     */
     val queueLength: Int
         get() = queue.size
 
+    /**
+     * Indicator if [queue] contains no customer.
+     */
     val isQueueEmpty: Boolean
         get() = queue.isEmpty()
 
+    /**
+     * Indicator if employee is currently serving.
+     */
     val isOccupied: Boolean
         get() = serving != null
 
@@ -38,9 +58,15 @@ open class Service<T>(
         private set
 
     /**
+     * Stats for calculating average queue length.
+     */
+    var queueStats = ContinuousStatistic()
+        private set
+
+    /**
      * Agent currently served by [Service].
      */
-    var serving: T? = null
+    private var serving: T? = null
         private set(value) {
             state = if (value == null) State.FREE else State.OCCUPIED
             field = value
@@ -105,21 +131,24 @@ open class Service<T>(
         }
         onQueueAdd(agent)
         queue.add(agent)
+        queueStats.addEntry(queueLength, core.simulationTime)
     }
 
     fun removeFromQueue(): T? {
         if (queue.isEmpty()) {
             return null
         }
-        val agent = queue.remove()
+        val agent = queue.peek()
         onQueueRemove(agent)
-        return agent
+        queueStats.addEntry(queueLength, core.simulationTime)
+        return queue.poll()
     }
 
     fun removeAll() {
         val removedList = queue.toList()
         onRemovedElements(removedList)
         queue.clear()
+        queueStats.addEntry(queueLength, core.simulationTime)
     }
 
     /**
@@ -137,19 +166,13 @@ open class Service<T>(
         var averageWorkload = 0.0
             private set
 
-        private var totalArea = 0.0
+        private var timeOccupied = 0.0
 
-        private var lastValue: Pair<State, Double>? = null
+        private var lastValue = state to servingStartTime
 
         fun calculateWorkFlow() {
-            if (lastValue == null) {
-                lastValue = state to core.simulationTime
-                return
-            }
-
-            val timeDifference = core.simulationTime - lastValue!!.second
-            totalArea += timeDifference / 2 * (state.value + lastValue!!.first.value)
-            averageWorkload = totalArea / core.simulationTime
+            timeOccupied += lastValue.first.value * (core.simulationTime - lastValue.second)
+            averageWorkload = timeOccupied / (core.simulationTime - servingStartTime)
             lastValue = state to core.simulationTime
         }
     }

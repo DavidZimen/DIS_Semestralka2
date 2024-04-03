@@ -41,4 +41,6 @@ fun isABetweenBandC(a: Double, b: Double, c: Double): Boolean {
     return isAGreaterOrEqualsToB(a, newB) && isALessOrEqualsToB(a, newC)
 }
 
-fun Double.round(decimalPlaces: Int, mode: RoundingMode) = this.toBigDecimal().setScale(decimalPlaces, mode)
+fun Double.round(decimalPlaces: Int, mode: RoundingMode = RoundingMode.HALF_UP): Double {
+    return this.toBigDecimal().setScale(decimalPlaces, mode).toDouble()
+}

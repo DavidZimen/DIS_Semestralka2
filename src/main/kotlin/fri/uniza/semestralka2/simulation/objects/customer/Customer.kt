@@ -70,15 +70,15 @@ class Customer(probability: Double) {
     /**
      * Time when customer entered queue to ticket generation.
      */
-    var automatStartTime = -1.0
+    var ticketMachineQueueStartTime = -1.0
 
     /**
      * Time when customer entered area for waiting until being served.
      */
-    var servingDeskStartTime = -1.0
+    var servingDeskQueueStartTime = -1.0
 
     /**
      * Time when customer entered queue to cash desk.
      */
-    var cashDeskStartTime = -1.0
+    var cashDeskQueueStartTime = -1.0
 }
