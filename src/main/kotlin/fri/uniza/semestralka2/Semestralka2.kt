@@ -1,5 +1,6 @@
 package fri.uniza.semestralka2
 
+import fri.uniza.semestralka2.gui.GuiController
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
@@ -10,6 +11,8 @@ class Semestralka2 : Application() {
     override fun start(stage: Stage) {
         val fxmlLoader = FXMLLoader(Semestralka2::class.java.getResource("gui.fxml"))
         val scene = Scene(fxmlLoader.load(), 1920.0, 1080.0)
+        val controller = fxmlLoader.getController<GuiController>()
+        controller.stage = stage
         stage.icons.add(Image(Semestralka2::class.java.getResourceAsStream("icon.png")))
         stage.title = "Event simulation"
         stage.scene = scene

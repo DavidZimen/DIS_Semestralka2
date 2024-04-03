@@ -32,6 +32,21 @@ import java.util.*
 class GuiController : Initializable {
 
     private val simulationApi = CompanySimulationApi.instance
+    private var state = SimulationState.STOPPED
+    var stage: Stage? = null
+        set(value) {
+            field = value
+            field?.setOnCloseRequest { e ->
+                if (state == SimulationState.RUNNING) {
+                    e.consume()
+                    onPause()
+                    showAlert("Simulation is still running. Do you really want to close application ?",
+                        "Running simulation",
+                        AlertType.CONFIRMATION
+                    )
+                }
+            }
+        }
 
     // INPUTS
     @FXML
@@ -169,6 +184,8 @@ class GuiController : Initializable {
                 stateDisabling(simState.state)
                 simState.speed.toSpeedLabel()
                 speed.value = simState.speed.round(2)
+
+                this.state = state.state
             }
         }
     }
@@ -273,7 +290,15 @@ class GuiController : Initializable {
             headerText = title
             contentText = message
             (dialogPane.scene.window as Stage).icons.add(Image(Semestralka2::class.java.getResourceAsStream("icon.png")))
-            show()
+            showAndWait().ifPresent { buttonType ->
+                if (type == AlertType.CONFIRMATION) {
+                    if (buttonType === ButtonType.OK) {
+                        Platform.exit()
+                    } else {
+                        onResume()
+                    }
+                }
+            }
         }
     }
 }
