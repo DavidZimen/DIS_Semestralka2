@@ -1,5 +1,6 @@
 package fri.uniza.semestralka2.gui
 
+import fri.uniza.semestralka2.Semestralka2
 import fri.uniza.semestralka2.api.CompanySimulationApi
 import fri.uniza.semestralka2.general_utils.format
 import fri.uniza.semestralka2.general_utils.minutesToLocalTime
@@ -16,6 +17,9 @@ import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.*
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.image.Image
+import javafx.stage.Stage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,6 +27,7 @@ import java.math.RoundingMode
 import java.net.URL
 import java.time.LocalTime
 import java.util.*
+
 
 @OptIn(DelicateCoroutinesApi::class)
 class GuiController : Initializable {
@@ -223,23 +228,35 @@ class GuiController : Initializable {
 
     private fun initSliders() {
         speed.valueProperty().addListener { _, _, new ->
-            new.toDouble().toSpeedLabel()
             simulationApi.setSpeed(new.toDouble())
+            new.toDouble().toSpeedLabel()
         }
         closeTime.valueProperty().addListener { _, _, new ->
             val time = new.toDouble().minutesToLocalTime()
+            try {
+                simulationApi.setCloseTime(time)
+            } catch (e: IllegalStateException) {
+                showAlert(e.message)
+            }
             closeLabel.text = "Close time: $time"
-            simulationApi.setCloseTime(time)
         }
         lastTicketTime.valueProperty().addListener { _, _, new ->
             val time = new.toDouble().minutesToLocalTime()
+            try {
+                simulationApi.setLastTicketTime(time)
+            } catch (e: IllegalStateException) {
+                showAlert(e.message)
+            }
             lastTicketLabel.text = "Last ticket time: $time"
-            simulationApi.setLastTicketTime(time)
         }
         openTime.valueProperty().addListener { _, _, new ->
             val time = new.toDouble().minutesToLocalTime()
+            try {
+                simulationApi.setOpenTime(time)
+            } catch (e: IllegalStateException) {
+                showAlert(e.message)
+            }
             openTimeLabel.text = "Open time: $time"
-            simulationApi.setOpenTime(time)
         }
         closeTime.init(LocalTime.of(17, 30))
         openTime.init(LocalTime.of(9, 0))
@@ -248,5 +265,15 @@ class GuiController : Initializable {
         speed.value = 1.0
         speed.min = SimulationCore.MIN_SLOW_DOWN
         speed.max = SimulationCore.MAX_SPEED_UP
+    }
+
+    private fun showAlert(message: String?, titleMsg: String = "Wrong time set", type: AlertType = AlertType.ERROR) {
+        with(Alert(type)) {
+            title = titleMsg
+            headerText = title
+            contentText = message
+            (dialogPane.scene.window as Stage).icons.add(Image(Semestralka2::class.java.getResourceAsStream("icon.png")))
+            show()
+        }
     }
 }
