@@ -10,7 +10,12 @@ import fri.uniza.semestralka2.simulation.objects.order.PaymentType
  * Class representing customer of the company that holds necessary data.
  * @author David Zimen
  */
-class Customer(probability: Double) {
+class Customer(
+    cusTypeProb: Double,
+    ordTypeProb: Double,
+    ordSizeProb: Double,
+    payTypeProb: Double,
+) {
     /**
      * Unique identifier of the customer.
      */
@@ -22,29 +27,30 @@ class Customer(probability: Double) {
     var ticketTime = -1.0
 
     /**
-     * Type of the customer.
-     */
-    val type: CustomerType = CustomerType.retrieveType(probability)
-
-    /**
      * State of the customer in the simulation.
      */
     var state = CustomerState.ARRIVED
 
     /**
+     * Type of the customer.
+     */
+    val type: CustomerType = CustomerType.retrieveType(cusTypeProb)
+
+
+    /**
      * Order type of the customer.
      */
-    var orderType: OrderType? = null
+    val orderType = OrderType.retrieveOrderType(ordTypeProb)
 
     /**
      * Order size of the customer.
      */
-    var orderSize: OrderSize? = null
+    val orderSize = OrderSize.retrieveOrderSize(ordSizeProb)
 
     /**
      * Type of the customer payment.
      */
-    var paymentType: PaymentType? = null
+    val paymentType = PaymentType.retrievePaymentType(payTypeProb)
 
     /**
      * Cash desk where customer was waiting in queue.

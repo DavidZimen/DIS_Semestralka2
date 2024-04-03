@@ -11,9 +11,13 @@ import java.util.*
 /**
  * @author David Zimen
  */
-class ServingDeskQueue(private val maxLength: Int = Int.MAX_VALUE, private val core: CompanyEventSimulation) {
+class ServingDeskQueue(
+    private val maxLength: Int = Int.MAX_VALUE,
+    startTime: Double,
+    private val core: CompanyEventSimulation
+) {
 
-    var stats = ContinuousStatistic()
+    var stats = ContinuousStatistic(startTime)
         private set
 
     private val baseQueue = PriorityQueue(compareBy<Customer> { it.type }.thenBy { it.ticketTime } )

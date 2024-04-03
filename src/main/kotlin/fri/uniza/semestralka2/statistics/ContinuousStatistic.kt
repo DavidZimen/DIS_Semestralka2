@@ -5,13 +5,16 @@ package fri.uniza.semestralka2.statistics
  * Provides mean, min and max value.
  * @author David Zimen
  */
-class ContinuousStatistic : Statistic() {
+class ContinuousStatistic(private val startTime: Double) : Statistic() {
 
     /**
      * Last value added to data set.
      */
     private var lastValue = 0.0 to 0.0
 
+    /**
+     * Weighted sum of items
+     */
     private var totalArea = 0.0
 
     /**
@@ -32,7 +35,7 @@ class ContinuousStatistic : Statistic() {
 
     private fun calculateMean(pair: Pair<Double, Double>) {
         val xAxisDiff = pair.second - lastValue.second
-        totalArea += xAxisDiff / 2 * (lastValue.first + pair.first)
-        mean = totalArea / pair.second
+        totalArea += xAxisDiff * lastValue.first
+        mean = totalArea / (pair.second - startTime)
     }
 }

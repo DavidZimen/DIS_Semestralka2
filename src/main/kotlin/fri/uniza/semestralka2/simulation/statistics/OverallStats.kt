@@ -7,6 +7,8 @@ import fri.uniza.semestralka2.statistics.DiscreteStatistic
 
 class OverallStats {
 
+    var replicationsExecuted = 0L
+
     lateinit var systemTime: DiscreteStatistic
         private set
 
@@ -39,9 +41,10 @@ class OverallStats {
     }
 
     override fun toString(): String {
-        return "Average customers served: ${customersServed.mean.round(3)}" +
-                "\nAverage time in company: ${systemTime.mean.secondsToMinutes().round(3)}" +
-                "\nAverage time in ticket machine queue: ${ticketQueueTime.mean.secondsToMinutes().round(3)}" +
+        return "\nReplications: $replicationsExecuted" +
+                "\nAverage customers served: ${customersServed.mean.round(3)}" +
+                "\nAverage time in company: ${systemTime.mean.secondsToMinutes().round(3)} min" +
+                "\nAverage time in ticket machine queue: ${ticketQueueTime.mean.secondsToMinutes().round(3)} min" +
                 "\nAverage ticket machine queue: ${ticketQueueLength.mean.round(3)}" +
                 "\nAverage service desks queue: ${serviceQueueLength.mean.round(3)}" +
                 "\nAverage exit of the last customer: ${lastCustomerExit.mean.secondsToLocalTime()}"

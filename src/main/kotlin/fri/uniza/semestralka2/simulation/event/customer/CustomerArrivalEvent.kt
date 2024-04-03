@@ -14,8 +14,14 @@ import fri.uniza.semestralka2.simulation.objects.customer.Customer
  */
 class CustomerArrivalEvent(time: Double, core: CompanyEventSimulation) : CompanyEvent(time, core) {
     override fun onExecute() {
-        val typeProb = core.customerTypeGenerator.sample()
-        val customer = Customer(typeProb).apply { systemStartTime = time }
+        val customer = with(core) {
+            Customer(
+                customerTypeGenerator.sample(),
+                orderTypeGenerator.sample(),
+                orderSizeGenerator.sample(),
+                paymentTypeGenerator.sample()
+            ).apply { systemStartTime = time }
+        }
         core.moveToSource(customer)
 
         val ticketMachine = core.ticketMachine

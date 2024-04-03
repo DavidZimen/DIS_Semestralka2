@@ -60,7 +60,7 @@ open class Service<T>(
     /**
      * Stats for calculating average queue length.
      */
-    var queueStats = ContinuousStatistic()
+    var queueStats = ContinuousStatistic(servingStartTime)
         private set
 
     /**

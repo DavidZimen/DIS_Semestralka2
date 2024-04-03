@@ -5,8 +5,6 @@ import fri.uniza.semestralka2.simulation.core.Service
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
-import fri.uniza.semestralka2.simulation.objects.order.OrderSize
-import fri.uniza.semestralka2.simulation.objects.order.OrderType
 
 /**
  * @author David Zimen
@@ -26,8 +24,6 @@ class ServingDesk(
             }
             canBeServed(this)
             state = CustomerState.BEING_SERVED
-            orderType = OrderType.retrieveOrderType(core.orderTypeGenerator.sample())
-            orderSize = OrderSize.retrieveOrderSize(core.orderSizeGenerator.sample())
             serviceDesk = this@ServingDesk
         }
     }

@@ -222,7 +222,6 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     override fun afterSimulation() {
-        println("Replications: $replicationsExecuted")
         println(overallStats)
     }
 
@@ -350,7 +349,7 @@ class CompanyEventSimulation : EventSimulationCore() {
         serviceDesks = online + other
 
         // service desks queue
-        serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, this)
+        serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, openTime, this)
 
         // cash desks
         cashDesks = (1..cashDeskCount).toList().map {
@@ -376,6 +375,7 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     private fun addToOverallStats() {
         with(overallStats) {
+            replicationsExecuted = this@CompanyEventSimulation.replicationsExecuted
             systemTime.addEntry(replicationStats.systemTime.mean)
             ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
             ticketQueueLength.addEntry(ticketMachine.queueStats.mean)
@@ -386,7 +386,7 @@ class CompanyEventSimulation : EventSimulationCore() {
         }
     }
 
-    inner class CompanySimulationState : EventSimulationState() {
+    class CompanySimulationState : EventSimulationState() {
         var customers= emptyList<CustomerDto>()
         var employees= emptyList<ServiceDto>()
     }
