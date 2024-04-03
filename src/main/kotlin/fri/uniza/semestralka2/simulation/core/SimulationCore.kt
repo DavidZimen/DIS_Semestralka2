@@ -11,7 +11,13 @@ open class SimulationCore {
      * Speed index of the simulation.
      */
     var speed = 1.0
-        private set
+        set(value) {
+            field = when {
+                value > MAX_SPEED_UP -> MAX_SPEED_UP
+                value < MIN_SLOW_DOWN -> MIN_SLOW_DOWN
+                else -> value
+            }
+        }
 
     /**
      * Current state of the simulation.
@@ -67,20 +73,6 @@ open class SimulationCore {
     }
 
     /**
-     * Speeds up the simulation run by doubling the current speed.
-     */
-    fun speedUpSimulation() {
-        speed = minOf(speed * 2, MAX_SPEED_UP)
-    }
-
-    /**
-     * Slows down the simulation run by half.
-     */
-    fun slowDownSimulation() {
-        speed = maxOf(speed / 2, MIN_SLOW_DOWN)
-    }
-
-    /**
      * Logic for [runSimulation]
      */
     open fun onRunSimulation() { }
@@ -108,7 +100,7 @@ open class SimulationCore {
     }
 
     companion object {
-        private const val MAX_SPEED_UP = 1_000.0
-        private const val MIN_SLOW_DOWN = 0.000_1
+        const val MAX_SPEED_UP = 100.0
+        const val MIN_SLOW_DOWN = 0.25
     }
 }

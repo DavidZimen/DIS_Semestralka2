@@ -2,7 +2,6 @@ package fri.uniza.semestralka2.api
 
 import fri.uniza.semestralka2.observer.Observer
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.core.EventSimulationMode
 import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import kotlinx.coroutines.coroutineScope
@@ -60,26 +59,10 @@ class CompanySimulationApi private constructor() {
     }
 
     /**
-     * @return [EventSimulationCore.mode] of the [simulation].
+     * Sets new speed of the [simulation].
      */
-    fun getMode() = simulation.mode
-
-    /**
-     * Increases speed of the [simulation].
-     * @return New [EventSimulationCore.speed] of [simulation]
-     */
-    fun speedUpSimulation(): Double {
-        simulation.speedUpSimulation()
-        return simulation.speed
-    }
-
-    /**
-     * Decreases speed of the [simulation].
-     * @return New [EventSimulationCore.speed] of [simulation]
-     */
-    fun slowDownSimulation(): Double {
-        simulation.slowDownSimulation()
-        return simulation.speed
+    fun setSpeed(speed: Double) {
+        simulation.speed = speed
     }
 
     /**
@@ -103,6 +86,8 @@ class CompanySimulationApi private constructor() {
     }
 
     fun setOpenTime(time: LocalTime) = simulation.setOpenTime(time)
+
+    fun setCloseTime(time: LocalTime) = simulation.setClosingTime(time)
 
     fun setLastTicketTime(time: LocalTime) = simulation.setTicketMachineClosingTime(time)
 

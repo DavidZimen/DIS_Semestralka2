@@ -6,6 +6,7 @@ import fri.uniza.semestralka2.general_utils.minutesToLocalTime
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.core.EventSimulationMode
+import fri.uniza.semestralka2.simulation.core.SimulationCore
 import fri.uniza.semestralka2.simulation.core.SimulationState
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
@@ -28,6 +29,7 @@ class GuiController : Initializable {
 
     private val simulationApi = CompanySimulationApi.instance
 
+    // INPUTS
     @FXML
     private lateinit var replications: TextField
     @FXML
@@ -35,11 +37,13 @@ class GuiController : Initializable {
     @FXML
     private lateinit var cashDesksCount: TextField
     @FXML
-    private lateinit var speed: Label
+    private lateinit var waitingAreaCount: TextField
     @FXML
     private lateinit var simulationTime: Label
     @FXML
     private lateinit var modeR: RadioButton
+
+    // SLIDERS
     @FXML
     private lateinit var openTime: Slider
     @FXML
@@ -48,6 +52,14 @@ class GuiController : Initializable {
     private lateinit var lastTicketTime: Slider
     @FXML
     private lateinit var lastTicketLabel: Label
+    @FXML
+    private lateinit var closeTime: Slider
+    @FXML
+    private lateinit var closeLabel: Label
+    @FXML
+    private lateinit var speed: Slider
+    @FXML
+    private lateinit var speedLabel: Label
 
     // BUTTONS
     @FXML
@@ -58,10 +70,6 @@ class GuiController : Initializable {
     private lateinit var resumeButton: Button
     @FXML
     private lateinit var pauseButton: Button
-    @FXML
-    private lateinit var speedUpButton: Button
-    @FXML
-    private lateinit var slowDownButton: Button
 
     // TABLE CUSTOMERS
     private var customers = FXCollections.observableArrayList<CustomerDto>()
@@ -101,42 +109,12 @@ class GuiController : Initializable {
 
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
-        customersTable.selectionModel.selectionMode = SelectionMode.SINGLE
-        name.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
-        cusType.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.type) }
-        arrivalTime.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.arrivalTime) }
-        orderType.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.orderType) }
-        orderSize.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.orderSize) }
-        serviceDesk.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.serviceDesk) }
-        chasDeskQueue.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDeskQueue) }
-        chasDesk.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDesk) }
-        currentState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
-
-        empTable.selectionModel.selectionMode = SelectionMode.SINGLE
-        empName.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
-        queueLength.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.queueLength) }
-        workload.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.workload) }
-        empState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
-
-        replications.allowOnlyInt()
-        serviceDesksCount.allowOnlyInt()
-        cashDesksCount.allowOnlyInt()
-
         stateDisabling(SimulationState.STOPPED)
         changeMode()
 
-        lastTicketTime.valueProperty().addListener { _, _, new ->
-            val time = new.toDouble().minutesToLocalTime()
-            lastTicketLabel.text = "Last ticket time: $time"
-            simulationApi.setLastTicketTime(time)
-        }
-        openTime.valueProperty().addListener { _, _, new ->
-            val time = new.toDouble().minutesToLocalTime()
-            openTimeLabel.text = "Open time: $time"
-            simulationApi.setOpenTime(time)
-        }
-        openTime.init(LocalTime.of(9, 30))
-        lastTicketTime.init(LocalTime.of(17, 0))
+        initTables()
+        initInputs()
+        initSliders()
     }
 
     @FXML
@@ -166,12 +144,6 @@ class GuiController : Initializable {
     fun onPause() = simulationApi.pauseSimulation()
 
     @FXML
-    fun speedUp() = simulationApi.speedUpSimulation().toSpeedLabel()
-
-    @FXML
-    fun slowDown() = simulationApi.slowDownSimulation().toSpeedLabel()
-
-    @FXML
     fun changeMode() {
         simulationApi.changeMode(if (modeR.isSelected) EventSimulationMode.REPLICATIONS else EventSimulationMode.SINGLE)
     }
@@ -197,7 +169,7 @@ class GuiController : Initializable {
     }
 
     private fun Double.toSpeedLabel() {
-        speed.text = "Speed: ${this.round(2, RoundingMode.HALF_UP)}x"
+        speedLabel.text = "Speed: ${this.round(2, RoundingMode.HALF_UP)}x"
     }
 
     private fun stateDisabling(state: SimulationState) {
@@ -207,25 +179,74 @@ class GuiController : Initializable {
                 stopButton.disable(false)
                 resumeButton.disable()
                 pauseButton.disable(false)
-                speedUpButton.disable(false)
-                slowDownButton.disable(false)
             }
             SimulationState.STOPPED -> {
                 startButton.disable(false)
                 stopButton.disable()
                 resumeButton.disable()
                 pauseButton.disable()
-                speedUpButton.disable()
-                slowDownButton.disable()
             }
             SimulationState.PAUSED -> {
                 startButton.disable()
                 stopButton.disable()
                 resumeButton.disable(false)
                 pauseButton.disable()
-                speedUpButton.disable()
-                slowDownButton.disable()
             }
         }
+    }
+
+    private fun initTables() {
+        customersTable.selectionModel.selectionMode = SelectionMode.SINGLE
+        name.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
+        cusType.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.type) }
+        arrivalTime.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.arrivalTime) }
+        orderType.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.orderType) }
+        orderSize.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.orderSize) }
+        serviceDesk.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.serviceDesk) }
+        chasDeskQueue.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDeskQueue) }
+        chasDesk.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.cashDesk) }
+        currentState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
+
+        empTable.selectionModel.selectionMode = SelectionMode.SINGLE
+        empName.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name) }
+        queueLength.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.queueLength) }
+        workload.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.workload) }
+        empState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
+    }
+
+    private fun initInputs() {
+        replications.allowOnlyInt()
+        serviceDesksCount.allowOnlyInt()
+        cashDesksCount.allowOnlyInt()
+        waitingAreaCount.allowOnlyInt()
+    }
+
+    private fun initSliders() {
+        speed.valueProperty().addListener { _, _, new ->
+            new.toDouble().toSpeedLabel()
+            simulationApi.setSpeed(new.toDouble())
+        }
+        closeTime.valueProperty().addListener { _, _, new ->
+            val time = new.toDouble().minutesToLocalTime()
+            closeLabel.text = "Close time: $time"
+            simulationApi.setCloseTime(time)
+        }
+        lastTicketTime.valueProperty().addListener { _, _, new ->
+            val time = new.toDouble().minutesToLocalTime()
+            lastTicketLabel.text = "Last ticket time: $time"
+            simulationApi.setLastTicketTime(time)
+        }
+        openTime.valueProperty().addListener { _, _, new ->
+            val time = new.toDouble().minutesToLocalTime()
+            openTimeLabel.text = "Open time: $time"
+            simulationApi.setOpenTime(time)
+        }
+        closeTime.init(LocalTime.of(17, 30))
+        openTime.init(LocalTime.of(9, 0))
+        lastTicketTime.init(LocalTime.of(17, 0))
+
+        speed.value = 1.0
+        speed.min = SimulationCore.MIN_SLOW_DOWN
+        speed.max = SimulationCore.MAX_SPEED_UP
     }
 }
