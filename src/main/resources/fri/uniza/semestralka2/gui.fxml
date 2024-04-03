@@ -9,7 +9,7 @@
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
    </padding>
-   <TabPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@tab_style.css" tabClosingPolicy="UNAVAILABLE">
+   <TabPane prefHeight="1080.0" prefWidth="1920.0" stylesheets="@styles.css" tabClosingPolicy="UNAVAILABLE">
       <Tab text="Simulation run">
          <VBox prefHeight="200.0" prefWidth="100.0">
             <VBox prefHeight="1033.0" prefWidth="1880.0">
@@ -82,7 +82,7 @@
                            <Font size="14.0"/>
                         </font>
                      </TextField>
-                     <RadioButton fx:id="modeS" mnemonicParsing="false" onAction="#changeMode"
+                     <RadioButton mnemonicParsing="false" onAction="#changeMode"
                                   selected="true" text="Single" toggleGroup="$heightPos">
                         <font>
                            <Font size="13.0"/>
