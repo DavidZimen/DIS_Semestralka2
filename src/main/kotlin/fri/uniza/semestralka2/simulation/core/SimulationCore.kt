@@ -92,13 +92,6 @@ open class SimulationCore {
      */
     open fun onResumeSimulation() { }
 
-    /**
-     * Resets [speed] back to base 1.0 value.
-     */
-    protected fun resetSpeed() {
-        speed = 1.0
-    }
-
     companion object {
         const val MAX_SPEED_UP = 100.0
         const val MIN_SLOW_DOWN = 0.25

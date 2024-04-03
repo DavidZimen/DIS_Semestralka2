@@ -23,7 +23,6 @@ import javafx.stage.Stage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
 import java.net.URL
 import java.time.LocalTime
 import java.util.*
@@ -169,12 +168,13 @@ class GuiController : Initializable {
 
                 stateDisabling(simState.state)
                 simState.speed.toSpeedLabel()
+                speed.value = simState.speed.round(2)
             }
         }
     }
 
     private fun Double.toSpeedLabel() {
-        speedLabel.text = "Speed: ${this.round(2, RoundingMode.HALF_UP)}x"
+        speedLabel.text = "Speed: ${this.round(2)}x"
     }
 
     private fun stateDisabling(state: SimulationState) {

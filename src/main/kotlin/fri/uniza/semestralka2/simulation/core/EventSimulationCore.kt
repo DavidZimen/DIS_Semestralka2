@@ -94,7 +94,6 @@ open class EventSimulationCore : SimulationCore() {
     final override fun onRunSimulation() {
         replicationsExecuted = 0
         eventsQueue.clear()
-        resetSpeed()
         beforeSimulation()
         simulationRun(true)
     }
