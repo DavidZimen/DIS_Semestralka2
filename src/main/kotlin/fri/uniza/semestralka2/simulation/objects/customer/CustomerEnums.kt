@@ -73,7 +73,7 @@ enum class CustomerState {
     /**
      * Customer left the company served.
      */
-    LEFT,
+    EXITED,
     /**
      * Customers, that did not receive ticket due to closing hours
      */

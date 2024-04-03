@@ -233,24 +233,39 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Sets the new value of [openTime] to [time] transformed to seconds.
      */
+    @Throws(IllegalStateException::class)
     fun setOpenTime(time: LocalTime) {
         simulationRunningCheck()
-        openTime = time.toSeconds()
+        val secTime = time.toSeconds()
+        if (secTime > simulationEndTime || secTime > ticketMachineClosingTime) {
+            throw IllegalStateException("Open time cannot be after closing time.")
+        }
+        openTime = secTime
     }
 
     /**
      * Sets the new value of [simulationEndTime] to [time] transformed to seconds.
      */
+    @Throws(IllegalStateException::class)
     fun setClosingTime(time: LocalTime) {
         simulationRunningCheck()
-        simulationEndTime = time.toSeconds()
+        val secTime = time.toSeconds()
+        if (secTime < openTime || secTime < ticketMachineClosingTime) {
+            throw IllegalStateException("Open time cannot be after closing time.")
+        }
+        simulationEndTime = secTime
     }
 
     /**
      * Sets the new value of [ticketMachineClosingTime] to [time] transformed to seconds.
      */
+    @Throws(IllegalStateException::class)
     fun setTicketMachineClosingTime(time: LocalTime) {
         simulationRunningCheck()
+        val secTime = time.toSeconds()
+        if (secTime < openTime || secTime > simulationEndTime) {
+            throw IllegalStateException("Must be between open time and closing time.")
+        }
         ticketMachineClosingTime = time.toSeconds()
     }
 

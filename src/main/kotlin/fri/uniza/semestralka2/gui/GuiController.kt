@@ -126,10 +126,14 @@ class GuiController : Initializable {
         changeMode()
 
         lastTicketTime.valueProperty().addListener { _, _, new ->
-            lastTicketLabel.text = "Last ticket time: ${new.toDouble().minutesToLocalTime()}"
+            val time = new.toDouble().minutesToLocalTime()
+            lastTicketLabel.text = "Last ticket time: $time"
+            simulationApi.setLastTicketTime(time)
         }
         openTime.valueProperty().addListener { _, _, new ->
-            openTimeLabel.text = "Open time: ${new.toDouble().minutesToLocalTime()}"
+            val time = new.toDouble().minutesToLocalTime()
+            openTimeLabel.text = "Open time: $time"
+            simulationApi.setOpenTime(time)
         }
         openTime.init(LocalTime.of(9, 30))
         lastTicketTime.init(LocalTime.of(17, 0))

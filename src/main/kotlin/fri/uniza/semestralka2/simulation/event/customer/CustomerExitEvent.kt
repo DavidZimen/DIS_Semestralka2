@@ -12,7 +12,7 @@ class CustomerExitEvent(
 ) : CompanyEvent(time, core) {
 
     override fun onExecute() {
-        customer.state = CustomerState.LEFT
+        customer.state = CustomerState.EXITED
         core.replicationStats.systemTime.addEntry(time - customer.systemStartTime)
         core.replicationStats.lastCustomerExit = time
         core.replicationStats.customersServed++

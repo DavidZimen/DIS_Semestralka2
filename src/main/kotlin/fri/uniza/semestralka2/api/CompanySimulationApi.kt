@@ -7,6 +7,7 @@ import fri.uniza.semestralka2.simulation.core.EventSimulationMode
 import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 /**
  * API for bridging UI and backend parts of the application.
@@ -100,6 +101,10 @@ class CompanySimulationApi private constructor() {
         simulation.serviceDeskCount = serviceDeskCount
         simulation.cashDeskCount = cashDeskCount
     }
+
+    fun setOpenTime(time: LocalTime) = simulation.setOpenTime(time)
+
+    fun setLastTicketTime(time: LocalTime) = simulation.setTicketMachineClosingTime(time)
 
     companion object {
         /**
