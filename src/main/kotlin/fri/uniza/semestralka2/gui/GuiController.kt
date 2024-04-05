@@ -23,6 +23,16 @@ import javafx.stage.Stage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.jfree.chart.ChartFactory
+import org.jfree.chart.axis.NumberAxis
+import org.jfree.chart.axis.NumberTickUnit
+import org.jfree.chart.fx.ChartViewer
+import org.jfree.chart.plot.XYPlot
+import org.jfree.data.Range
+import org.jfree.data.xy.XYSeries
+import org.jfree.data.xy.XYSeriesCollection
+import java.awt.BasicStroke
+import java.awt.Color
 import java.net.URL
 import java.time.LocalTime
 import java.util.*
@@ -126,6 +136,18 @@ class GuiController : Initializable {
     @FXML
     private lateinit var empState: TableColumn<ServiceDto, String>
 
+    //GRAPH PROPERTIES
+    @FXML
+    private lateinit var serviceDesks: TextField
+    @FXML
+    private lateinit var maxCashDeskCount: TextField
+    @FXML
+    private lateinit var minCashDeskCount: TextField
+    @FXML
+    private lateinit var replicationsGraph: TextField
+    @FXML
+    private lateinit var chart: ChartViewer
+    private var series = XYSeries("series")
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         stateDisabling(SimulationState.STOPPED)
@@ -134,6 +156,7 @@ class GuiController : Initializable {
         initTables()
         initInputs()
         initSliders()
+        createChart()
     }
 
     @FXML
@@ -165,6 +188,11 @@ class GuiController : Initializable {
     @FXML
     fun changeMode() {
         simulationApi.changeMode(if (modeR.isSelected) EventSimulationMode.REPLICATIONS else EventSimulationMode.SINGLE)
+    }
+
+    @FXML
+    fun startGraphTest() {
+        createChart()
     }
 
     private fun createSimulationObserver() {
@@ -241,6 +269,10 @@ class GuiController : Initializable {
         serviceDesksCount.allowOnlyInt()
         cashDesksCount.allowOnlyInt()
         waitingAreaCount.allowOnlyInt()
+        replicationsGraph.allowOnlyInt()
+        minCashDeskCount.allowOnlyInt()
+        maxCashDeskCount.allowOnlyInt()
+        serviceDesksCount.allowOnlyInt()
     }
 
     private fun initSliders() {
@@ -282,6 +314,38 @@ class GuiController : Initializable {
         speed.value = 1.0
         speed.min = SimulationCore.MIN_SLOW_DOWN
         speed.max = SimulationCore.MAX_SPEED_UP
+    }
+
+    private fun createChart() {
+        val dataset = XYSeriesCollection()
+        val color = Color.GREEN
+        series.clear()
+        dataset.addSeries(series)
+
+        val chart = ChartFactory.createXYLineChart(
+            "Company event simulation",
+            "Cash desks",
+            "Average ticket machine queue",
+            dataset
+        )
+
+        //auto range for the y-axis
+        val yAxis = chart.xyPlot.rangeAxis as NumberAxis
+        yAxis.autoRangeIncludesZero = false
+        yAxis.isAutoRange = true
+
+        val xAxis = chart.xyPlot.domainAxis as NumberAxis
+        xAxis.range = Range(minCashDeskCount.text.toDouble() - 1, maxCashDeskCount.text.toDouble() + 1)
+        xAxis.tickUnit = NumberTickUnit(1.0)
+        xAxis.isAutoRange = false
+
+        with(chart.plot as XYPlot) {
+            backgroundPaint = Color.WHITE
+            renderer.setSeriesStroke(0, BasicStroke(1.5f))
+            renderer.setSeriesPaint(0, color)
+        }
+        this.chart.chart = chart
+        this.chart.isVisible = true
     }
 
     private fun showAlert(message: String?, titleMsg: String = "Wrong time set", type: AlertType = AlertType.ERROR) {
