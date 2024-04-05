@@ -140,7 +140,7 @@ open class Service<T>(
         }
         val agent = queue.peek()
         onQueueRemove(agent)
-        queueStats.addEntry(queueLength, core.simulationTime)
+        queueStats.addEntry(queueLength - 1, core.simulationTime)
         return queue.poll()
     }
 
@@ -171,8 +171,9 @@ open class Service<T>(
         private var lastValue = state to servingStartTime
 
         fun calculateWorkFlow() {
+            val endTime = if (servingEndTime < 0.0) core.simulationTime else servingEndTime
             timeOccupied += lastValue.first.value * (core.simulationTime - lastValue.second)
-            averageWorkload = timeOccupied / (core.simulationTime - servingStartTime)
+            averageWorkload = timeOccupied / (endTime - servingStartTime)
             lastValue = state to core.simulationTime
         }
     }

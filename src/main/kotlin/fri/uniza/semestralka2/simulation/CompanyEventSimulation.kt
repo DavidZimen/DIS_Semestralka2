@@ -5,24 +5,15 @@ import fri.uniza.semestralka2.general_utils.minutesToSeconds
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
-import fri.uniza.semestralka2.simulation.components.CashDesk
-import fri.uniza.semestralka2.simulation.components.ServingDesk
-import fri.uniza.semestralka2.simulation.components.ServingDeskQueue
-import fri.uniza.semestralka2.simulation.components.TicketMachine
+import fri.uniza.semestralka2.simulation.components.*
 import fri.uniza.semestralka2.simulation.core.EventSimulationCore
 import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
-import fri.uniza.semestralka2.simulation.objects.customer.Customer
-import fri.uniza.semestralka2.simulation.objects.customer.CustomerSequence
-import fri.uniza.semestralka2.simulation.objects.customer.CustomerType
-import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
-import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
-import fri.uniza.semestralka2.simulation.objects.dto.toDto
-import fri.uniza.semestralka2.simulation.objects.order.OrderSize
-import fri.uniza.semestralka2.simulation.objects.order.OrderType
-import fri.uniza.semestralka2.simulation.objects.order.PaymentType
-import fri.uniza.semestralka2.simulation.statistics.OverallStats
-import fri.uniza.semestralka2.simulation.statistics.ReplicationStats
+import fri.uniza.semestralka2.simulation.objects.customer.*
+import fri.uniza.semestralka2.simulation.objects.dto.*
+import fri.uniza.semestralka2.simulation.objects.order.*
+import fri.uniza.semestralka2.simulation.statistics.*
+import fri.uniza.semestralka2.statistics.DiscreteStatistic
 import java.math.RoundingMode
 import java.time.LocalTime
 
@@ -36,7 +27,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Number of [ServingDesk] in simulation.
      */
-    var serviceDeskCount = 15
+    var serviceDeskCount = 13
         set(value) {
             simulationRunningCheck()
             field = value
@@ -45,7 +36,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Number of [CashDesk] in simulation.
      */
-    var cashDeskCount = 6
+    var cashDeskCount = 4
         set(value) {
             simulationRunningCheck()
             field = value
@@ -208,8 +199,8 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     // OVERRIDE FUNCTIONS
     override fun beforeSimulation() {
-        overallStats.reset()
         simulationState = CompanySimulationState()
+        initOverallStats()
         initGenerators()
     }
 
@@ -292,12 +283,32 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     /**
      * Adds all elements from [removedList] to [ticketMachineSink]
+     * when [simulationTime] is after [ticketMachineClosingTime].
      */
     fun moveToTicketMachineSink(removedList: List<Customer>) = ticketMachineSink.addAll(removedList)
 
+    /**
+     * Add [customer] to [source] list of the simulation.
+     */
     fun moveToSource(customer: Customer) = source.add(customer)
 
+    /**
+     * Add [customer] to [sink] when he reached [CustomerState.EXITED].
+     */
     fun moveToSink(customer: Customer) = sink.add(customer)
+
+    /**
+     * Initializes [OverallStats] before simulation starts.
+     */
+    private fun initOverallStats() = with(overallStats) {
+        reset()
+        for (i in 0 until cashDeskCount) {
+            cashDesksWorkload.add(DiscreteStatistic() to DiscreteStatistic())
+        }
+        for (i in 0 until serviceDeskCount) {
+            serviceDesksWorkload.add(DiscreteStatistic())
+        }
+    }
 
     // PRIVATE FUNCTIONS
     /**
@@ -305,7 +316,7 @@ class CompanyEventSimulation : EventSimulationCore() {
      */
     private fun initGenerators() {
         arrivalGenerator = ExponentialGenerator(1 / 2.0)
-        ticketMachineGenerator = ContinuousUniformGenerator(30.0, 180.0)
+        ticketMachineGenerator = ContinuousUniformGenerator(30.0, 120.0)
         orderDictationGenerator = ContinuousUniformGenerator(60.0, 900.0)
         orderRetrievalTimeGenerator = ContinuousUniformGenerator(30.0, 70.0)
         onlineHandoverTimeGenerator = TriangularDistribution(60.0, 480.0, 120.0)
@@ -388,16 +399,22 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Adds single replication statistic into [overallStats].
      */
-    private fun addToOverallStats() {
-        with(overallStats) {
-            replicationsExecuted = this@CompanyEventSimulation.replicationsExecuted
-            systemTime.addEntry(replicationStats.systemTime.mean)
-            ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
-            ticketQueueLength.addEntry(ticketMachine.queueStats.mean)
-            serviceQueueLength.addEntry(serviceDeskQueue.stats.mean)
-            cashDeskQueueTime.addEntry(replicationStats.cashDeskQueueTime.mean)
-            lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
-            customersServed.addEntry(replicationStats.customersServed)
+    private fun addToOverallStats() = with(overallStats) {
+        replicationsExecuted = this@CompanyEventSimulation.replicationsExecuted
+        systemTime.addEntry(replicationStats.systemTime.mean)
+        ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
+        ticketQueueLength.addEntry(ticketMachine.queueStats.mean)
+        ticketMachineWorkload.addEntry(ticketMachine.workload.averageWorkload)
+        serviceQueueLength.addEntry(serviceDeskQueue.stats.mean)
+        cashDeskQueueTime.addEntry(replicationStats.cashDeskQueueTime.mean)
+        lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
+        customersServed.addEntry(replicationStats.customersServed)
+        cashDesks.forEachIndexed { i, it ->
+            cashDesksWorkload[i].first.addEntry(it.workload.averageWorkload)
+            cashDesksWorkload[i].second.addEntry(it.queueStats.mean)
+        }
+        serviceDesks.forEachIndexed { i, it ->
+            serviceDesksWorkload[i].addEntry(it.workload.averageWorkload)
         }
     }
 

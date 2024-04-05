@@ -17,10 +17,10 @@ class CustomerArrivalEvent(time: Double, core: CompanyEventSimulation) : Company
         val customer = Customer(core)
         core.moveToSource(customer)
 
-        val ticketMachine = core.ticketMachine
-        if (ticketMachine.isOccupied || !core.serviceDeskQueue.canAdd()) {
-            ticketMachine.addToQueue(customer)
+        if (core.ticketMachine.isOccupied || !core.serviceDeskQueue.canAdd()) {
+            core.ticketMachine.addToQueue(customer)
         } else {
+            core.replicationStats.ticketQueueTime.addEntry(0)
             core.scheduleEvent(PrintTicketStartEvent(time, customer, core))
         }
 

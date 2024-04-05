@@ -10,7 +10,7 @@ class ContinuousStatistic(private val startTime: Double) : Statistic() {
     /**
      * Last value added to data set.
      */
-    private var lastValue = 0.0 to 0.0
+    private var lastValue = 0.0 to startTime
 
     /**
      * Weighted sum of items

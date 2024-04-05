@@ -29,8 +29,9 @@ fun main() {
 ////        }
 ////        speedUpSimulation()
 //        replicationsCount = 25000
-////        cashDeskCount = 1
-////        serviceDeskCount = 2
+//        setClosingTime(LocalTime.of(17, 30))
+////        cashDeskCount = 4
+////        serviceDeskCount = 13
 //        runSimulation()
 //    }
 }
