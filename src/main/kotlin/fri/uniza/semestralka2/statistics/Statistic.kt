@@ -35,4 +35,22 @@ abstract class Statistic {
      * Number of elements in data set.
      */
     protected var count: Long = 1
+
+    /**
+     * Sum of all elements added to [Statistic].
+     */
+    protected var sum = 0.0
+
+    /**
+     * Sum of all elements added to [Statistic]. Each element is squared.
+     */
+    protected var squareSum = 0.0
+
+    protected fun calculateMinMax(sample: Double) {
+        if (sample < min)
+            min = sample
+
+        if (sample > max)
+            max = sample
+    }
 }

@@ -11,34 +11,26 @@ import kotlin.math.sqrt
 class DiscreteStatistic : Statistic() {
 
     /**
-     * Last value added to data set.
-     */
-    private var lastValue: Double = 0.0
-
-    /**
      * Adds [sample] to data set and recalculates all variables.
      */
     fun addEntry(sample: Number) {
-        lastValue = sample.toDouble()
+        val sampleDouble = sample.toDouble()
+        sum += sampleDouble
+        squareSum += sampleDouble.pow(2)
         count++
 
-        if (lastValue < min)
-            min = lastValue
-
-        if (lastValue > max)
-            max = lastValue
-
+        calculateMinMax(sampleDouble)
         calculateVariance()
         calculateMean()
         calculateStandardDeviation()
     }
 
     private fun calculateMean() {
-        mean = ((mean * (count - 1)) + lastValue) / count
+        mean = sum / count
     }
 
     private fun calculateVariance() {
-        variance = ((count - 1) / count.toDouble()) * (variance + ((lastValue - mean).pow(2) / (count - 1)))
+        variance = ( (1 / count) * squareSum ) - ( (1 / count) * sum ).pow(2)
     }
 
     private fun calculateStandardDeviation() {
