@@ -1,7 +1,7 @@
 package fri.uniza.semestralka2.simulation.objects.dto
 
+import fri.uniza.semestralka2.core.Service
 import fri.uniza.semestralka2.general_utils.round
-import fri.uniza.semestralka2.simulation.core.Service
 import java.math.RoundingMode
 
 

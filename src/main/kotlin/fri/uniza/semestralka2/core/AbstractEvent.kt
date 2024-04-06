@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.core
+package fri.uniza.semestralka2.core
 
 /**
  * Abstract event class for [EventSimulationCore].

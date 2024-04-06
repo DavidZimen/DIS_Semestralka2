@@ -1,9 +1,9 @@
 package fri.uniza.semestralka2.api
 
+import fri.uniza.semestralka2.core.EventSimulationMode
+import fri.uniza.semestralka2.core.EventSimulationState
 import fri.uniza.semestralka2.observer.Observer
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.EventSimulationMode
-import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalTime

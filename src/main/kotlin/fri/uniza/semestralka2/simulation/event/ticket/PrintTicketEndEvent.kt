@@ -1,5 +1,6 @@
 package fri.uniza.semestralka2.simulation.event.ticket
 
+import fri.uniza.semestralka2.general_utils.isAGreaterThanB
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.event.CompanyEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
@@ -21,6 +22,12 @@ class PrintTicketEndEvent(
 
             // move customer to service desks queue
             core.serviceDeskQueue.add(customer)
+
+            // do not schedule if ticket machine is closed
+            if (isAGreaterThanB(time, core.ticketMachineClosingTime)) {
+                removeAll()
+                return
+            }
 
             // schedule new ticket print if queue is not empty and service queue is not full
             if (!isQueueEmpty && core.serviceDeskQueue.canAdd()) {

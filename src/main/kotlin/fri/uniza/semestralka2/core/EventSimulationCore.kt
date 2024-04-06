@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.core
+package fri.uniza.semestralka2.core
 
 import fri.uniza.semestralka2.general_utils.secondsToLocalTime
 import fri.uniza.semestralka2.observer.Observable

@@ -1,6 +1,5 @@
 package fri.uniza.semestralka2.simulation.event.ticket
 
-import fri.uniza.semestralka2.general_utils.isAGreaterThanB
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.event.CompanyEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
@@ -26,11 +25,7 @@ class PrintTicketStartEvent(
 
     private fun startTicketPrinting(customer: Customer) {
         val endTime = time + core.ticketMachineGenerator.sample()
-        if (isAGreaterThanB(endTime, core.ticketMachineClosingTime)) {
-            core.ticketMachine.removeAll()
-        } else {
-            core.ticketMachine.startServing(customer)
-            core.scheduleEvent(PrintTicketEndEvent(endTime, customer, core))
-        }
+        core.ticketMachine.startServing(customer)
+        core.scheduleEvent(PrintTicketEndEvent(endTime, customer, core))
     }
 }

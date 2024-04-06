@@ -1,4 +1,4 @@
-package fri.uniza.semestralka2.simulation.core
+package fri.uniza.semestralka2.core
 
 /**
  * Modes of the Event simulation.

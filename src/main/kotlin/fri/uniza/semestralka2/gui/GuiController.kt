@@ -2,13 +2,13 @@ package fri.uniza.semestralka2.gui
 
 import fri.uniza.semestralka2.Semestralka2
 import fri.uniza.semestralka2.api.CompanySimulationApi
+import fri.uniza.semestralka2.core.EventSimulationMode
+import fri.uniza.semestralka2.core.SimulationCore
+import fri.uniza.semestralka2.core.SimulationState
 import fri.uniza.semestralka2.general_utils.format
 import fri.uniza.semestralka2.general_utils.minutesToLocalTime
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.EventSimulationMode
-import fri.uniza.semestralka2.simulation.core.SimulationCore
-import fri.uniza.semestralka2.simulation.core.SimulationState
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
 import javafx.application.Platform

@@ -1,7 +1,7 @@
 package fri.uniza.semestralka2.simulation.components
 
+import fri.uniza.semestralka2.core.Service
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.Service
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 

@@ -10,7 +10,7 @@ import javafx.stage.Stage
 class Semestralka2 : Application() {
     override fun start(stage: Stage) {
         val fxmlLoader = FXMLLoader(Semestralka2::class.java.getResource("gui.fxml"))
-        val scene = Scene(fxmlLoader.load(), 1920.0, 1080.0)
+        val scene = Scene(fxmlLoader.load(), 1920.0, 1000.0)
         val controller = fxmlLoader.getController<GuiController>()
         controller.stage = stage
         stage.icons.add(Image(Semestralka2::class.java.getResourceAsStream("icon.png")))
@@ -30,8 +30,8 @@ fun main() {
 ////        speedUpSimulation()
 //        replicationsCount = 25000
 //        setClosingTime(LocalTime.of(17, 30))
-////        cashDeskCount = 4
-////        serviceDeskCount = 13
+//        cashDeskCount = 4
+//        serviceDeskCount = 13
 //        runSimulation()
 //    }
 }

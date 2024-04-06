@@ -1,13 +1,13 @@
 package fri.uniza.semestralka2.simulation
 
 import fri.uniza.novinovy_stanok.generator.ContinuousUniformGenerator
+import fri.uniza.semestralka2.core.EventSimulationCore
+import fri.uniza.semestralka2.core.EventSimulationState
 import fri.uniza.semestralka2.general_utils.minutesToSeconds
 import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.components.*
-import fri.uniza.semestralka2.simulation.core.EventSimulationCore
-import fri.uniza.semestralka2.simulation.core.EventSimulationState
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.customer.*
 import fri.uniza.semestralka2.simulation.objects.dto.*

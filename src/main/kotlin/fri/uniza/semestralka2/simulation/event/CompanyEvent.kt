@@ -1,7 +1,7 @@
 package fri.uniza.semestralka2.simulation.event
 
+import fri.uniza.semestralka2.core.AbstractEvent
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
-import fri.uniza.semestralka2.simulation.core.AbstractEvent
 
 /**
  * Abstract event for [CompanyEventSimulation].
