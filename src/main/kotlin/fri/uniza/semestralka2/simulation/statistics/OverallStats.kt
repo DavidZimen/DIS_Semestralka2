@@ -7,8 +7,6 @@ import fri.uniza.semestralka2.statistics.DiscreteStatistic
 
 class OverallStats {
 
-    var replicationsExecuted = 0L
-
     lateinit var systemTime: DiscreteStatistic
         private set
 
@@ -33,7 +31,7 @@ class OverallStats {
     lateinit var customersServed: DiscreteStatistic
         private set
 
-    lateinit var cashDesksWorkload: MutableList<Pair<DiscreteStatistic, DiscreteStatistic>>
+    lateinit var cashDesksStats: MutableList<Pair<DiscreteStatistic, DiscreteStatistic>>
         private set
 
     lateinit var serviceDesksWorkload: MutableList<DiscreteStatistic>
@@ -48,13 +46,12 @@ class OverallStats {
         cashDeskQueueTime = DiscreteStatistic()
         lastCustomerExit = DiscreteStatistic()
         customersServed = DiscreteStatistic()
-        cashDesksWorkload = mutableListOf()
+        cashDesksStats = mutableListOf()
         serviceDesksWorkload = mutableListOf()
     }
 
     override fun toString(): String {
-        var str = "\nReplications: $replicationsExecuted" +
-                "\nAverage customers served: ${customersServed.mean.round(3)}" +
+        var str = "\nAverage customers served: ${customersServed.mean.round(3)}" +
                 "\nAverage time in company: ${systemTime.mean.round(3)} sec / ${systemTime.mean.secondsToMinutes().round(3)} min" +
                 "\nAverage time in ticket machine queue: ${ticketQueueTime.mean.round(3)} sec / ${ticketQueueTime.mean.secondsToMinutes().round(3)} min" +
                 "\nAverage ticket machine queue: ${ticketQueueLength.mean.round(3)}" +
@@ -65,7 +62,7 @@ class OverallStats {
         }
         str += "\nAverage cash desk queue time: ${cashDeskQueueTime.mean.round(3)} sec / ${cashDeskQueueTime.mean.round(3).secondsToMinutes()} min"
         str.plus("\nAverage cash desk workload | queue length:")
-        cashDesksWorkload.forEachIndexed { i, it ->
+        cashDesksStats.forEachIndexed { i, it ->
             str += "\n\tCash desk $i: ${(it.first.mean * 100).round(2)}% | ${it.second.mean.round(3)}"
         }
         str += "\nAverage exit of the last customer: ${lastCustomerExit.mean.secondsToLocalTime()}"

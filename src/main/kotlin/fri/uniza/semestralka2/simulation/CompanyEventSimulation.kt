@@ -214,6 +214,8 @@ class CompanyEventSimulation : EventSimulationCore() {
 
     override fun afterSimulation() {
         println(overallStats)
+        updateSimulationState()
+        simulationStateObservable.next(simulationState)
     }
 
     override fun afterReplication() {
@@ -278,6 +280,7 @@ class CompanyEventSimulation : EventSimulationCore() {
         with(simulationState as CompanySimulationState) {
             customers = source.map { it.toDto() }
             employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() } + ticketMachine.toDto()
+            overallStats = this@CompanyEventSimulation.overallStats.toDto()
         }
     }
 
@@ -303,7 +306,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     private fun initOverallStats() = with(overallStats) {
         reset()
         for (i in 0 until cashDeskCount) {
-            cashDesksWorkload.add(DiscreteStatistic() to DiscreteStatistic())
+            cashDesksStats.add(DiscreteStatistic() to DiscreteStatistic())
         }
         for (i in 0 until serviceDeskCount) {
             serviceDesksWorkload.add(DiscreteStatistic())
@@ -400,7 +403,6 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Adds single replication statistic into [overallStats].
      */
     private fun addToOverallStats() = with(overallStats) {
-        replicationsExecuted = this@CompanyEventSimulation.replicationsExecuted
         systemTime.addEntry(replicationStats.systemTime.mean)
         ticketQueueTime.addEntry(replicationStats.ticketQueueTime.mean)
         ticketQueueLength.addEntry(ticketMachine.queueStats.mean)
@@ -410,8 +412,8 @@ class CompanyEventSimulation : EventSimulationCore() {
         lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
         customersServed.addEntry(replicationStats.customersServed)
         cashDesks.forEachIndexed { i, it ->
-            cashDesksWorkload[i].first.addEntry(it.workload.averageWorkload)
-            cashDesksWorkload[i].second.addEntry(it.queueStats.mean)
+            cashDesksStats[i].first.addEntry(it.workload.averageWorkload)
+            cashDesksStats[i].second.addEntry(it.queueStats.mean)
         }
         serviceDesks.forEachIndexed { i, it ->
             serviceDesksWorkload[i].addEntry(it.workload.averageWorkload)
@@ -419,7 +421,8 @@ class CompanyEventSimulation : EventSimulationCore() {
     }
 
     class CompanySimulationState : EventSimulationState() {
-        var customers= emptyList<CustomerDto>()
-        var employees= emptyList<ServiceDto>()
+        lateinit var customers: List<CustomerDto>
+        lateinit var employees: List<ServiceDto>
+        lateinit var overallStats: OverallStatsDto
     }
 }

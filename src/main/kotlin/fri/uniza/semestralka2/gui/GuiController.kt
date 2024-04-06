@@ -22,12 +22,15 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jfree.chart.ChartFactory
 import org.jfree.chart.axis.NumberAxis
 import org.jfree.chart.axis.NumberTickUnit
 import org.jfree.chart.fx.ChartViewer
+import org.jfree.chart.labels.XYItemLabelGenerator
 import org.jfree.chart.plot.XYPlot
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer
 import org.jfree.data.Range
 import org.jfree.data.xy.XYSeries
 import org.jfree.data.xy.XYSeriesCollection
@@ -57,6 +60,12 @@ class GuiController : Initializable {
                 }
             }
         }
+
+    // SPINNER
+    @FXML
+    private lateinit var spinnerLabel: Label
+    @FXML
+    private lateinit var spinner: ProgressIndicator
 
     // INPUTS
     @FXML
@@ -99,6 +108,8 @@ class GuiController : Initializable {
     private lateinit var resumeButton: Button
     @FXML
     private lateinit var pauseButton: Button
+    @FXML
+    private lateinit var expStartButton: Button
 
     // TABLE CUSTOMERS
     private var customers = FXCollections.observableArrayList<CustomerDto>()
@@ -147,7 +158,7 @@ class GuiController : Initializable {
     private lateinit var replicationsGraph: TextField
     @FXML
     private lateinit var chart: ChartViewer
-    private var series = XYSeries("series")
+    private var series = XYSeries("Average ticket machine queue length")
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         stateDisabling(SimulationState.STOPPED)
@@ -193,6 +204,48 @@ class GuiController : Initializable {
     @FXML
     fun startGraphTest() {
         createChart()
+        val start = minCashDeskCount.text.toInt()
+        val end = maxCashDeskCount.text.toInt()
+        val serviceDesks = serviceDesks.text.toInt()
+
+        // had to be correct interval
+        if (start >= end) {
+            showAlert("Cash desk from must be less than to !!!", "Wrong cash desks counts")
+            return
+        }
+        if (serviceDesks < 1) {
+            showAlert("Service desks count must be positive number.", "Wrong service desk count")
+            return
+        }
+
+        simulationApi.setOpenTime(LocalTime.of(9, 0))
+        simulationApi.setLastTicketTime(LocalTime.of(17, 0))
+        simulationApi.setCloseTime(LocalTime.of(17, 30))
+        simulationApi.changeMode(EventSimulationMode.REPLICATIONS)
+
+        spinner.showSpinner(true, spinnerLabel)
+        expStartButton.disable()
+        GlobalScope.launch {
+            for (i in start.rangeTo(end)) {
+                val sim = async {
+                    simulationApi.setEntryParameters(replicationsGraph.text.toInt(), serviceDesks, i)
+                    simulationApi.runSimulation()
+                }
+                simulationApi.observeSimulation(i.toString()) { state ->
+                    val simState = state as CompanyEventSimulation.CompanySimulationState
+                    if (simState.state == SimulationState.STOPPED) {
+                        Platform.runLater {
+                            series.add(i, simState.overallStats.avgTicketQueueLength)
+                        }
+                    }
+                }
+
+                sim.await()
+                simulationApi.stopObservingSimulation(i.toString())
+            }
+            spinner.showSpinner(false, spinnerLabel)
+            expStartButton.disable(false)
+        }
     }
 
     private fun createSimulationObserver() {
@@ -272,7 +325,7 @@ class GuiController : Initializable {
         replicationsGraph.allowOnlyInt()
         minCashDeskCount.allowOnlyInt()
         maxCashDeskCount.allowOnlyInt()
-        serviceDesksCount.allowOnlyInt()
+        serviceDesks.allowOnlyInt()
     }
 
     private fun initSliders() {
@@ -322,30 +375,36 @@ class GuiController : Initializable {
         series.clear()
         dataset.addSeries(series)
 
-        val chart = ChartFactory.createXYLineChart(
+        val jFreeChart = ChartFactory.createXYLineChart(
             "Company event simulation",
             "Cash desks",
             "Average ticket machine queue",
             dataset
         )
 
+        val renderer = XYLineAndShapeRenderer(true, false)
+        renderer.defaultItemLabelGenerator = XYItemLabelGenerator { set, x, y -> set.getYValue(x, y).toString() }
+        renderer.defaultItemLabelsVisible = true
+        renderer.setSeriesShapesVisible(0, true)
+        jFreeChart.xyPlot.renderer = renderer
+
         //auto range for the y-axis
-        val yAxis = chart.xyPlot.rangeAxis as NumberAxis
+        val yAxis = jFreeChart.xyPlot.rangeAxis as NumberAxis
         yAxis.autoRangeIncludesZero = false
         yAxis.isAutoRange = true
 
-        val xAxis = chart.xyPlot.domainAxis as NumberAxis
+        val xAxis = jFreeChart.xyPlot.domainAxis as NumberAxis
         xAxis.range = Range(minCashDeskCount.text.toDouble() - 1, maxCashDeskCount.text.toDouble() + 1)
         xAxis.tickUnit = NumberTickUnit(1.0)
         xAxis.isAutoRange = false
 
-        with(chart.plot as XYPlot) {
+        with(jFreeChart.plot as XYPlot) {
             backgroundPaint = Color.WHITE
             renderer.setSeriesStroke(0, BasicStroke(1.5f))
             renderer.setSeriesPaint(0, color)
         }
-        this.chart.chart = chart
-        this.chart.isVisible = true
+        chart.chart = jFreeChart
+        chart.isVisible = true
     }
 
     private fun showAlert(message: String?, titleMsg: String = "Wrong time set", type: AlertType = AlertType.ERROR) {

@@ -23,8 +23,7 @@ open class EventSimulationCore : SimulationCore() {
     /**
      * Number of replications successfully executed.
      */
-    var replicationsExecuted = 0L
-        private set
+    private var replicationsExecuted = 0L
 
     /**
      * [EventSimulationMode] of the simulation.
@@ -48,16 +47,16 @@ open class EventSimulationCore : SimulationCore() {
 
     /**
      * [Observable] for enabling subscription on [EventSimulationState].
-     * Possible to override.
      */
-    open var simulationStateObservable = Observable<EventSimulationState>()
+    var simulationStateObservable = Observable<EventSimulationState>()
         protected set
 
     /**
      * For keeping changes until choosing to notify [simulationStateObservable] subscribers.
      * Attribute for [simulationTime] is automatically set at the end of [AbstractEvent] execution.
      */
-    open lateinit var simulationState: EventSimulationState
+    lateinit var simulationState: EventSimulationState
+        protected set
 
     /**
      * [PriorityQueue] of simulation [AbstractEvent]s, that is sorted by [AbstractEvent.time].
@@ -81,10 +80,11 @@ open class EventSimulationCore : SimulationCore() {
     /**
      * Updates [simulationState] with current value.
      */
-    open fun updateSimulationState() {
-        simulationState.state = state
-        simulationState.time = simulationTime.secondsToLocalTime()
-        simulationState.speed = speed
+    open fun updateSimulationState() = with(simulationState) {
+        state = this@EventSimulationCore.state
+        speed = this@EventSimulationCore.speed
+        replicationsExecuted = this@EventSimulationCore.replicationsExecuted
+        time = simulationTime.secondsToLocalTime()
     }
 
     /**
@@ -156,8 +156,8 @@ open class EventSimulationCore : SimulationCore() {
         } while (shouldContinueSimulation())
 
         if (state == SimulationState.RUNNING) {
-            afterSimulation()
             stopSimulation()
+            afterSimulation()
         }
     }
 

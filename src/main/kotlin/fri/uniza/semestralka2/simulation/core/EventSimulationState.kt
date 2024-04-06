@@ -8,5 +8,6 @@ import java.time.LocalTime
 open class EventSimulationState(
     var time: LocalTime = LocalTime.now(),
     var state: SimulationState = SimulationState.STOPPED,
-    var speed: Double = 1.0
+    var speed: Double = 1.0,
+    var replicationsExecuted: Long = 0
 )
