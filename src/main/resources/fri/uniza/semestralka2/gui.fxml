@@ -218,135 +218,162 @@
                   </Label>
                </FlowPane>
                <VBox fx:id="wholeVBox" prefHeight="870.0" prefWidth="1847.0">
-                  <VBox fx:id="overallVBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0"
-                        prefWidth="1847.0">
-                     <HBox prefHeight="33.0" prefWidth="1850.0">
-                        <Label text="Overall stats">
-                           <font>
-                              <Font name="System Bold" size="20.0"/>
-                           </font>
-                        </Label>
-                        <Label fx:id="repsExecuted" text="Replications executed:">
-                           <HBox.margin>
-                              <Insets left="50.0" top="5.0"/>
-                           </HBox.margin>
-                           <font>
-                              <Font size="14.0"/>
-                           </font>
-                        </Label>
-                     </HBox>
-                     <HBox prefHeight="331.0" prefWidth="1847.0">
-                        <VBox prefHeight="301.0" prefWidth="471.0">
-                           <Label text="Workloads">
+                  <children>
+                     <VBox fx:id="overallVBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="1847.0">
+                        <children>
+                           <HBox prefHeight="33.0" prefWidth="1850.0">
+                              <children>
+                                 <Label text="Overall stats">
+                                    <font>
+                                       <Font name="System Bold" size="20.0" />
+                                    </font>
+                                 </Label>
+                                 <Label fx:id="repsExecuted" text="Replications executed:">
+                                    <HBox.margin>
+                                       <Insets left="50.0" top="5.0" />
+                                    </HBox.margin>
+                                    <font>
+                                       <Font size="14.0" />
+                                    </font>
+                                 </Label>
+                              </children>
+                           </HBox>
+                           <HBox prefHeight="331.0" prefWidth="1847.0">
+                              <children>
+                                 <VBox prefHeight="301.0" prefWidth="471.0">
+                                    <children>
+                                       <Label text="Workloads">
+                                          <font>
+                                             <Font name="System Bold" size="14.0" />
+                                          </font>
+                                       </Label>
+                                       <TableView fx:id="workloadsTable" maxHeight="-Infinity" prefHeight="301.0" prefWidth="354.0">
+                                          <columns>
+                                             <TableColumn fx:id="worklName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
+                                             <TableColumn fx:id="worklMean" editable="false" prefWidth="96.0" sortable="false" text="Average" />
+                                             <TableColumn fx:id="worklMin" editable="false" prefWidth="117.0" sortable="false" text="Min" />
+                                             <TableColumn fx:id="worklMax" editable="false" prefWidth="104.0" sortable="false" text="Max" />
+                                          </columns>
+                                       </TableView>
+                                    </children>
+                                 </VBox>
+                                 <VBox layoutX="10.0" layoutY="10.0" prefHeight="301.0" prefWidth="471.0">
+                                    <children>
+                                       <Label text="Queue lengths">
+                                          <font>
+                                             <Font name="System Bold" size="14.0" />
+                                          </font>
+                                       </Label>
+                                       <TableView fx:id="queueLengthsTable" maxHeight="-Infinity" prefHeight="301.0" prefWidth="354.0">
+                                          <columns>
+                                             <TableColumn fx:id="queueName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
+                                             <TableColumn fx:id="queueMean" editable="false" prefWidth="96.0" sortable="false" text="Average" />
+                                             <TableColumn fx:id="queueMin" editable="false" prefWidth="117.0" sortable="false" text="Min" />
+                                             <TableColumn fx:id="queueMax" editable="false" prefWidth="104.0" sortable="false" text="Max" />
+                                          </columns>
+                                       </TableView>
+                                    </children>
+                                    <HBox.margin>
+                                       <Insets left="50.0" />
+                                    </HBox.margin>
+                                 </VBox>
+                                 <VBox prefHeight="311.0" prefWidth="648.0">
+                                    <HBox.margin>
+                                       <Insets left="50.0" />
+                                    </HBox.margin>
+                                    <children>
+                                       <Label text="Time in system:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                       </Label>
+                                       <Label fx:id="ovSystemTime" />
+                                       <Label layoutX="10.0" layoutY="10.0" text="Time in ticket machine queue:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="ovTicketTime" layoutX="10.0" layoutY="29.0" />
+                                       <Label layoutX="10.0" layoutY="10.0" text="Time in cash desk queue:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="ovCashDeskTime" layoutX="10.0" layoutY="70.0" />
+                                       <Label layoutX="10.0" layoutY="48.0" text="Last customer exit:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="ovLastExit" layoutX="10.0" layoutY="111.0" />
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                     <VBox fx:id="replicationVBox" prefHeight="566.0" prefWidth="1847.0">
+                        <children>
+                           <Label text="Replication overview">
                               <font>
-                                 <Font name="System Bold" size="14.0"/>
+                                 <Font name="System Bold" size="20.0" />
                               </font>
+                              <VBox.margin>
+                                 <Insets bottom="10.0" />
+                              </VBox.margin>
                            </Label>
-                           <TableView fx:id="workloadsTable" maxHeight="-Infinity" prefHeight="301.0"
-                                      prefWidth="354.0">
-                              <columns>
-                                 <TableColumn fx:id="worklName" editable="false" prefWidth="137.0"
-                                              sortable="false" text="Name"/>
-                                 <TableColumn fx:id="worklMean" editable="false" prefWidth="96.0"
-                                              sortable="false" text="Average"/>
-                                 <TableColumn fx:id="worklMin" editable="false" prefWidth="117.0"
-                                              sortable="false" text="Min"/>
-                                 <TableColumn fx:id="worklMax" editable="false" prefWidth="104.0"
-                                              sortable="false" text="Max"/>
-                              </columns>
-                           </TableView>
-                        </VBox>
-                        <VBox layoutX="10.0" layoutY="10.0" prefHeight="301.0" prefWidth="471.0">
-                           <HBox.margin>
-                              <Insets left="50.0"/>
-                           </HBox.margin>
-                           <Label text="Queue lengths">
-                              <font>
-                                 <Font name="System Bold" size="14.0"/>
-                              </font>
-                           </Label>
-                           <TableView fx:id="queueLengthsTable" maxHeight="-Infinity" prefHeight="301.0"
-                                      prefWidth="354.0">
-                              <columns>
-                                 <TableColumn fx:id="queueName" editable="false" prefWidth="137.0"
-                                              sortable="false" text="Name"/>
-                                 <TableColumn fx:id="queueMean" editable="false" prefWidth="96.0"
-                                              sortable="false" text="Average"/>
-                                 <TableColumn fx:id="queueMin" editable="false" prefWidth="117.0"
-                                              sortable="false" text="Min"/>
-                                 <TableColumn fx:id="queueMax" editable="false" prefWidth="104.0"
-                                              sortable="false" text="Max"/>
-                              </columns>
-                           </TableView>
-                        </VBox>
-                     </HBox>
-                  </VBox>
-                  <VBox fx:id="replicationVBox" prefHeight="566.0" prefWidth="1847.0">
-                     <Label text="Replication overview">
-                        <font>
-                           <Font name="System Bold" size="20.0"/>
-                        </font>
-                        <VBox.margin>
-                           <Insets bottom="10.0"/>
-                        </VBox.margin>
-                     </Label>
-                     <HBox prefHeight="601.0" prefWidth="1847.0">
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                              prefHeight="602.0" prefWidth="1005.0">
-                           <Label text="Customers">
-                              <font>
-                                 <Font name="System Bold" size="16.0"/>
-                              </font>
-                           </Label>
-                           <TableView fx:id="customersTable" maxHeight="-Infinity" maxWidth="-Infinity"
-                                      prefHeight="441.0" prefWidth="1005.0">
-                              <columns>
-                                 <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0"
-                                              resizable="false" sortable="false" text="Name"/>
-                                 <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0"
-                                              sortable="false" text="Type"/>
-                                 <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0"
-                                              text="Arrival time"/>
-                                 <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="121.0"
-                                              sortable="false" text="Order type"/>
-                                 <TableColumn fx:id="orderSize" editable="false" minWidth="79.0" prefWidth="102.0"
-                                              sortable="false" text="Order size"/>
-                                 <TableColumn fx:id="serviceDesk" editable="false" minWidth="77.0" prefWidth="121.0"
-                                              resizable="false" sortable="false" text="Service desk"/>
-                                 <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="56.0"
-                                              prefWidth="101.0" resizable="false" sortable="false"
-                                              text="Cash desk queue"/>
-                                 <TableColumn fx:id="chasDesk" editable="false" minWidth="55.0" prefWidth="104.0"
-                                              resizable="false" sortable="false" text="Cash desk"/>
-                                 <TableColumn fx:id="currentState" editable="false" minWidth="51.0" prefWidth="127.0"
-                                              resizable="false" sortable="false" text="Current state"/>
-                              </columns>
-                           </TableView>
-                        </VBox>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="477.0">
-                           <HBox.margin>
-                              <Insets left="150.0"/>
-                           </HBox.margin>
-                           <Label text="Employees">
-                              <font>
-                                 <Font name="System Bold" size="16.0"/>
-                              </font>
-                           </Label>
-                           <TableView fx:id="empTable" maxHeight="-Infinity" prefHeight="442.0" prefWidth="477.0">
-                              <columns>
-                                 <TableColumn fx:id="empName" editable="false" prefWidth="137.0" sortable="false"
-                                              text="Name"/>
-                                 <TableColumn fx:id="queueLength" editable="false" prefWidth="96.0" sortable="false"
-                                              text="QueueLength"/>
-                                 <TableColumn fx:id="workload" editable="false" prefWidth="117.0" sortable="false"
-                                              text="Workload"/>
-                                 <TableColumn fx:id="empState" editable="false" prefWidth="104.0" sortable="false"
-                                              text="Current state"/>
-                              </columns>
-                           </TableView>
-                        </VBox>
-                     </HBox>
-                  </VBox>
+                           <HBox prefHeight="601.0" prefWidth="1847.0">
+                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="1005.0">
+                                 <Label text="Customers">
+                                    <font>
+                                       <Font name="System Bold" size="16.0" />
+                                    </font>
+                                 </Label>
+                                 <TableView fx:id="customersTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="441.0" prefWidth="1005.0">
+                                    <columns>
+                                       <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
+                                       <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
+                                       <TableColumn fx:id="arrivalTime" editable="false" minWidth="100.0" prefWidth="100.0" text="Arrival time" />
+                                       <TableColumn fx:id="orderType" editable="false" minWidth="100.0" prefWidth="121.0" sortable="false" text="Order type" />
+                                       <TableColumn fx:id="orderSize" editable="false" minWidth="79.0" prefWidth="102.0" sortable="false" text="Order size" />
+                                       <TableColumn fx:id="serviceDesk" editable="false" minWidth="77.0" prefWidth="121.0" resizable="false" sortable="false" text="Service desk" />
+                                       <TableColumn fx:id="chasDeskQueue" editable="false" minWidth="56.0" prefWidth="101.0" resizable="false" sortable="false" text="Cash desk queue" />
+                                       <TableColumn fx:id="chasDesk" editable="false" minWidth="55.0" prefWidth="104.0" resizable="false" sortable="false" text="Cash desk" />
+                                       <TableColumn fx:id="currentState" editable="false" minWidth="51.0" prefWidth="127.0" resizable="false" sortable="false" text="Current state" />
+                                    </columns>
+                                 </TableView>
+                              </VBox>
+                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="477.0">
+                                 <HBox.margin>
+                                    <Insets left="150.0" />
+                                 </HBox.margin>
+                                 <Label text="Employees">
+                                    <font>
+                                       <Font name="System Bold" size="16.0" />
+                                    </font>
+                                 </Label>
+                                 <TableView fx:id="empTable" maxHeight="-Infinity" prefHeight="442.0" prefWidth="477.0">
+                                    <columns>
+                                       <TableColumn fx:id="empName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
+                                       <TableColumn fx:id="queueLength" editable="false" prefWidth="96.0" sortable="false" text="QueueLength" />
+                                       <TableColumn fx:id="workload" editable="false" prefWidth="117.0" sortable="false" text="Workload" />
+                                       <TableColumn fx:id="empState" editable="false" prefWidth="104.0" sortable="false" text="Current state" />
+                                    </columns>
+                                 </TableView>
+                              </VBox>
+                           </HBox>
+                        </children>
+                     </VBox>
+                  </children>
                </VBox>
             </VBox>
          </VBox>

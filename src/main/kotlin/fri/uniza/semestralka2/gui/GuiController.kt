@@ -48,6 +48,12 @@ class GuiController : Initializable {
 
     private val simulationApi = CompanySimulationApi.instance
     private var state = SimulationState.STOPPED
+        set(value) {
+            field = value
+            if (value == SimulationState.STOPPED) {
+                simulationApi.stopObservingSimulation("observer")
+            }
+        }
     var stage: Stage? = null
         set(value) {
             field = value
@@ -76,8 +82,18 @@ class GuiController : Initializable {
     private lateinit var spinnerLabel: Label
     @FXML
     private lateinit var spinner: ProgressIndicator
+
+    // STATISTICS
     @FXML
     private lateinit var repsExecuted: Label
+    @FXML
+    private lateinit var ovSystemTime: Label
+    @FXML
+    private lateinit var ovTicketTime: Label
+    @FXML
+    private lateinit var ovCashDeskTime: Label
+    @FXML
+    private lateinit var ovLastExit: Label
 
     // INPUTS
     @FXML
@@ -320,6 +336,11 @@ class GuiController : Initializable {
 
                         queueLengths = FXCollections.observableArrayList(listOf(avgTicketQueueLength) + avgCashDeskQueueLength)
                         queueLengthsTable.items = queueLengths
+
+                        ovSystemTime.text = avgSystemTime.toOwnString(true)
+                        ovTicketTime.text = avgTicketQueueTime.toOwnString()
+                        ovCashDeskTime.text = avgCashDeskQueueTime.toOwnString()
+                        ovLastExit.text = avgLastCustomerExit.toOwnTimeString()
                     }
                 }
 
@@ -328,7 +349,7 @@ class GuiController : Initializable {
                 speed.value = simState.speed.round(2)
                 repsExecuted.text = "Replications executed: ${simState.replicationsExecuted}"
 
-                this.state = state.state
+                this.state = simState.state
             }
         }
     }

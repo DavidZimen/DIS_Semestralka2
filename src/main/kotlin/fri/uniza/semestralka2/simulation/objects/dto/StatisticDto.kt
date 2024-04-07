@@ -10,7 +10,7 @@ data class StatisticDto(
     val mean: Double,
     val min: Double,
     val max: Double,
-    val confidenceInterval: Pair<Double, Double>,
+    val confidenceInterval: Pair<Int, Pair<Double, Double>>,
     val name: String? = null
 )
 
@@ -22,6 +22,6 @@ fun Statistic.toDto(name: String? = null, confPercentage: Int = 95, decimalPlace
     mean.round(decimalPlaces),
     min.round(decimalPlaces),
     max.round(decimalPlaces),
-    getConfidenceInterval(confPercentage, decimalPlaces),
+    confPercentage to getConfidenceInterval(confPercentage, decimalPlaces),
     name
 )
