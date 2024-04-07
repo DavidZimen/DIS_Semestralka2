@@ -85,6 +85,7 @@ open class EventSimulationCore : SimulationCore() {
         speed = this@EventSimulationCore.speed
         replicationsExecuted = this@EventSimulationCore.replicationsExecuted
         time = simulationTime.secondsToLocalTime()
+        simulationStateObservable.next(this)
     }
 
     /**

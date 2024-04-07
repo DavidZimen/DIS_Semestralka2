@@ -66,6 +66,9 @@ abstract class Statistic {
      * Values will be rounded to [decimalPlaces].
      */
     fun getConfidenceInterval(percentage: Int, decimalPlaces: Int = 3): Pair<Double, Double> {
+        if (count < 30) {
+            return 0.0 to 0.0
+        }
         val sampleVariance = (squareSum - (sum.pow(2) / count)) / (count - 1)
         val sampleStdDeviation = sqrt(sampleVariance)
         val tAlpha = abs(NormalDistribution().inverseCumulativeProbability((1 - (percentage / 100.0)) / 2))

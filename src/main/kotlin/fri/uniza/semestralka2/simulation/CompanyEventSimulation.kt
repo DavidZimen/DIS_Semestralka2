@@ -215,11 +215,11 @@ class CompanyEventSimulation : EventSimulationCore() {
     override fun afterSimulation() {
         println(overallStats)
         updateSimulationState()
-        simulationStateObservable.next(simulationState)
     }
 
     override fun afterReplication() {
         addToOverallStats()
+        updateSimulationState()
     }
 
     // PUBLIC FUNCTIONS
@@ -276,12 +276,12 @@ class CompanyEventSimulation : EventSimulationCore() {
      * Updates [simulationState] with new values.
      */
     override fun updateSimulationState() {
-        super.updateSimulationState()
         with(simulationState as CompanySimulationState) {
             customers = source.map { it.toDto() }
             employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() } + ticketMachine.toDto()
             overallStats = this@CompanyEventSimulation.overallStats.toDto()
         }
+        super.updateSimulationState()
     }
 
     /**

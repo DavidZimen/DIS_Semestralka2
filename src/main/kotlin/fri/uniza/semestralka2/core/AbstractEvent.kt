@@ -47,6 +47,5 @@ abstract class AbstractEvent(
             return
         }
         core.updateSimulationState()
-        core.simulationStateObservable.next(core.simulationState)
     }
 }

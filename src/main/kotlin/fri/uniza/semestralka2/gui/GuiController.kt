@@ -11,6 +11,7 @@ import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import fri.uniza.semestralka2.simulation.objects.dto.CustomerDto
 import fri.uniza.semestralka2.simulation.objects.dto.ServiceDto
+import fri.uniza.semestralka2.simulation.objects.dto.StatisticDto
 import javafx.application.Platform
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -19,6 +20,7 @@ import javafx.fxml.Initializable
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.Image
+import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -61,11 +63,21 @@ class GuiController : Initializable {
             }
         }
 
+    //CONTAINERS
+    @FXML
+    private lateinit var overallVBox: VBox
+    @FXML
+    private lateinit var replicationVBox: VBox
+    @FXML
+    private lateinit var wholeVBox: VBox
+
     // SPINNER
     @FXML
     private lateinit var spinnerLabel: Label
     @FXML
     private lateinit var spinner: ProgressIndicator
+    @FXML
+    private lateinit var repsExecuted: Label
 
     // INPUTS
     @FXML
@@ -147,6 +159,32 @@ class GuiController : Initializable {
     @FXML
     private lateinit var empState: TableColumn<ServiceDto, String>
 
+    // TABLE OVERALL WORKLOADS
+    private var workloads = FXCollections.observableArrayList<StatisticDto>()
+    @FXML
+    private lateinit var workloadsTable: TableView<StatisticDto>
+    @FXML
+    private lateinit var worklName: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var worklMean: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var worklMin: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var worklMax: TableColumn<StatisticDto, String>
+
+    // TABLE AVERAGE QUEUE LENGTHS
+    private var queueLengths = FXCollections.observableArrayList<StatisticDto>()
+    @FXML
+    private lateinit var queueLengthsTable: TableView<StatisticDto>
+    @FXML
+    private lateinit var queueName: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var queueMean: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var queueMin: TableColumn<StatisticDto, String>
+    @FXML
+    private lateinit var queueMax: TableColumn<StatisticDto, String>
+
     //GRAPH PROPERTIES
     @FXML
     private lateinit var serviceDesks: TextField
@@ -162,6 +200,8 @@ class GuiController : Initializable {
 
     override fun initialize(p0: URL?, p1: ResourceBundle?) {
         stateDisabling(SimulationState.STOPPED)
+        wholeVBox.children.remove(replicationVBox)
+        wholeVBox.children.remove(overallVBox)
         changeMode()
 
         initTables()
@@ -198,7 +238,17 @@ class GuiController : Initializable {
 
     @FXML
     fun changeMode() {
-        simulationApi.changeMode(if (modeR.isSelected) EventSimulationMode.REPLICATIONS else EventSimulationMode.SINGLE)
+        if (modeR.isSelected) {
+            simulationApi.changeMode(EventSimulationMode.REPLICATIONS)
+            wholeVBox.children.remove(replicationVBox)
+            wholeVBox.children.add(overallVBox)
+            simulationTime.isVisible = false
+        } else {
+            simulationApi.changeMode(EventSimulationMode.SINGLE)
+            wholeVBox.children.remove(overallVBox)
+            wholeVBox.children.add(replicationVBox)
+            simulationTime.isVisible = true
+        }
     }
 
     @FXML
@@ -252,19 +302,31 @@ class GuiController : Initializable {
         simulationApi.observeSimulation("observer") { state ->
             Platform.runLater {
                 val simState = state as CompanyEventSimulation.CompanySimulationState
-                simulationTime.text = "Time: ${simState.time.format()}"
+                if (!modeR.isSelected) {
+                    simulationTime.text = "Time: ${simState.time.format()}"
 
-                // customers
-                customers = FXCollections.observableArrayList(simState.customers)
-                customersTable.items = customers
+                    // customers
+                    customers = FXCollections.observableArrayList(simState.customers)
+                    customersTable.items = customers
 
-                //employees
-                employees = FXCollections.observableArrayList(simState.employees)
-                empTable.items = employees
+                    //employees
+                    employees = FXCollections.observableArrayList(simState.employees)
+                    empTable.items = employees
+                } else {
+                    // to overall stats
+                    with(simState.overallStats) {
+                        workloads = FXCollections.observableArrayList(listOf(avgTicketMachineWorkload) + avgCashDeskWorkload + avgServiceDeskWorkload)
+                        workloadsTable.items = workloads
+
+                        queueLengths = FXCollections.observableArrayList(listOf(avgTicketQueueLength) + avgCashDeskQueueLength)
+                        queueLengthsTable.items = queueLengths
+                    }
+                }
 
                 stateDisabling(simState.state)
                 simState.speed.toSpeedLabel()
                 speed.value = simState.speed.round(2)
+                repsExecuted.text = "Replications executed: ${simState.replicationsExecuted}"
 
                 this.state = state.state
             }
@@ -315,6 +377,18 @@ class GuiController : Initializable {
         queueLength.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.queueLength) }
         workload.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.workload) }
         empState.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.state) }
+
+        workloadsTable.selectionModel.selectionMode = SelectionMode.SINGLE
+        worklName.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name ?: "Not filled") }
+        worklMean.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.mean.toString()) }
+        worklMax.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.max.toString()) }
+        worklMin.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.min.toString()) }
+
+        queueLengthsTable.selectionModel.selectionMode = SelectionMode.SINGLE
+        queueName.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.name ?: "Not filled") }
+        queueMean.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.mean.toString()) }
+        queueMax.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.max.toString()) }
+        queueMin.setCellValueFactory { cellData -> SimpleStringProperty(cellData.value.min.toString()) }
     }
 
     private fun initInputs() {
