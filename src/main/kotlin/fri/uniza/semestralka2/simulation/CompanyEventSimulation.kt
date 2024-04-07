@@ -303,14 +303,8 @@ class CompanyEventSimulation : EventSimulationCore() {
     /**
      * Initializes [OverallStats] before simulation starts.
      */
-    private fun initOverallStats() = with(overallStats) {
-        reset()
-        for (i in 0 until cashDeskCount) {
-            cashDesksStats.add(DiscreteStatistic() to DiscreteStatistic())
-        }
-        for (i in 0 until serviceDeskCount) {
-            serviceDesksWorkload.add(DiscreteStatistic())
-        }
+    private fun initOverallStats(){
+        overallStats.reset()
     }
 
     // PRIVATE FUNCTIONS
@@ -376,6 +370,11 @@ class CompanyEventSimulation : EventSimulationCore() {
             )
         }
         serviceDesks = online + other
+        if (overallStats.serviceDesksWorkload.isEmpty()) {
+            serviceDesks.forEach {
+                overallStats.serviceDesksWorkload[it.name] = DiscreteStatistic()
+            }
+        }
 
         // service desks queue
         serviceDeskQueue = ServingDeskQueue(serviceDeskQueueMaxLength, openTime, this)
@@ -388,6 +387,11 @@ class CompanyEventSimulation : EventSimulationCore() {
                 simulationEndTime,
                 this
             )
+        }
+        if (overallStats.cashDesksStats.isEmpty()) {
+            cashDesks.forEach {
+                overallStats.cashDesksStats[it.name] = DiscreteStatistic() to DiscreteStatistic()
+            }
         }
 
         // ticket machine
@@ -411,12 +415,12 @@ class CompanyEventSimulation : EventSimulationCore() {
         cashDeskQueueTime.addEntry(replicationStats.cashDeskQueueTime.mean)
         lastCustomerExit.addEntry(replicationStats.lastCustomerExit)
         customersServed.addEntry(replicationStats.customersServed)
-        cashDesks.forEachIndexed { i, it ->
-            cashDesksStats[i].first.addEntry(it.workload.averageWorkload)
-            cashDesksStats[i].second.addEntry(it.queueStats.mean)
+        cashDesks.forEach {
+            cashDesksStats[it.name]?.first?.addEntry(it.workload.averageWorkload)
+            cashDesksStats[it.name]?.second?.addEntry(it.queueStats.mean)
         }
-        serviceDesks.forEachIndexed { i, it ->
-            serviceDesksWorkload[i].addEntry(it.workload.averageWorkload)
+        serviceDesks.forEach {
+            serviceDesksWorkload[it.name]?.addEntry(it.workload.averageWorkload)
         }
     }
 

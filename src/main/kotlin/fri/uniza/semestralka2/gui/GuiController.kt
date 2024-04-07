@@ -235,7 +235,7 @@ class GuiController : Initializable {
                     val simState = state as CompanyEventSimulation.CompanySimulationState
                     if (simState.state == SimulationState.STOPPED) {
                         Platform.runLater {
-                            series.add(i, simState.overallStats.avgTicketQueueLength)
+                            series.add(i, simState.overallStats.avgTicketQueueLength.mean.round(3))
                         }
                     }
                 }

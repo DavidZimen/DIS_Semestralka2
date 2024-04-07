@@ -1,5 +1,11 @@
 package fri.uniza.semestralka2.statistics
 
+import fri.uniza.semestralka2.general_utils.round
+import org.apache.commons.math3.distribution.NormalDistribution
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 abstract class Statistic {
     /**
      * Average value of all values added into data set.
@@ -52,5 +58,19 @@ abstract class Statistic {
 
         if (sample > max)
             max = sample
+    }
+
+    /**
+     * Returns value of [percentage] confidence interval.
+     * [Pair.first] is lower limit, [Pair.second] is higher limit.
+     * Values will be rounded to [decimalPlaces].
+     */
+    fun getConfidenceInterval(percentage: Int, decimalPlaces: Int = 3): Pair<Double, Double> {
+        val sampleVariance = (squareSum - (sum.pow(2) / count)) / (count - 1)
+        val sampleStdDeviation = sqrt(sampleVariance)
+        val tAlpha = abs(NormalDistribution().inverseCumulativeProbability((1 - (percentage / 100.0)) / 2))
+        val lowerLimit = mean - ((sampleStdDeviation * tAlpha) / sqrt(count.toDouble()))
+        val higherLimit = mean + ((sampleStdDeviation * tAlpha) / sqrt(count.toDouble()))
+        return lowerLimit.round(decimalPlaces) to higherLimit.round(decimalPlaces)
     }
 }
