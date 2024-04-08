@@ -21,7 +21,7 @@ class CustomerServingStartEvent(
         val (orderDictation, orderCreation) = if (customer.type == CustomerType.ONLINE) {
             0.0 to core.onlineHandoverTimeGenerator.sample()
         } else {
-            core.orderDictationGenerator.sample() to core.getOrderCreationGenerator(customer.orderType!!).sample().minutesToSeconds()
+            core.orderDictationGenerator.sample() to core.getOrderCreationGenerator(customer.orderType).sample().minutesToSeconds()
         }
 
         // schedule serving end
