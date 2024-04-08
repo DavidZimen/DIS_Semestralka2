@@ -1,13 +1,11 @@
 package fri.uniza.semestralka2
 
 import fri.uniza.semestralka2.gui.GuiController
-import fri.uniza.semestralka2.simulation.CompanyEventSimulation
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.image.Image
 import javafx.stage.Stage
-import java.time.LocalTime
 
 class Semestralka2 : Application() {
     override fun start(stage: Stage) {
@@ -23,17 +21,5 @@ class Semestralka2 : Application() {
 }
 
 fun main() {
-//    Application.launch(Semestralka2::class.java)
-    with(CompanyEventSimulation()) {
-//        mode = EventSimulationCore.Mode.SINGLE
-//        simulationStateObservable.subscribe("Random") { state ->
-//            println("\r${(state as CompanyEventSimulation.CompanySimulationState).customers.size}")
-//        }
-//        speedUpSimulation()
-        replicationsCount = 10000
-        setClosingTime(LocalTime.of(17, 30))
-        cashDeskCount = 4
-        serviceDeskCount = 13
-        runSimulation()
-    }
+    Application.launch(Semestralka2::class.java)
 }
