@@ -27,18 +27,7 @@ abstract class DeskOccupationEvent(
                 return null
             }
 
-            val cashDesk = if (notOccupied.size == 1) {
-                notOccupied[0]
-            } else {
-                notOccupied[cashDeskIndex(notOccupied.size)]
-            }
-
-            if (cashDesk.isOccupied) {
-                cashDesk.addToQueue(customer)
-                return null
-            } else {
-                return cashDesk
-            }
+            return retrieveCashDesk(notOccupied)
         }
 
         // empty return null
@@ -46,10 +35,18 @@ abstract class DeskOccupationEvent(
             return null
         }
 
-        val cashDesk = if (minimalQueues.size == 1) {
-            minimalQueues[0]
+        return retrieveCashDesk(minimalQueues)
+    }
+
+    private fun cashDeskIndex(size: Int): Int {
+        return (size * core.cashDeskChooseGenerator.sample()).round(0, RoundingMode.FLOOR).toInt()
+    }
+
+    private fun retrieveCashDesk(cashDesks: List<CashDesk>): CashDesk? {
+        val cashDesk = if (cashDesks.size == 1) {
+            cashDesks[0]
         } else {
-            minimalQueues[cashDeskIndex(minimalQueues.size)]
+            cashDesks[cashDeskIndex(cashDesks.size)]
         }
 
         if (cashDesk.isOccupied) {
@@ -58,9 +55,5 @@ abstract class DeskOccupationEvent(
         } else {
             return cashDesk
         }
-    }
-
-    private fun cashDeskIndex(size: Int): Int {
-        return (size * core.cashDeskChooseGenerator.sample()).round(0, RoundingMode.FLOOR).toInt()
     }
 }

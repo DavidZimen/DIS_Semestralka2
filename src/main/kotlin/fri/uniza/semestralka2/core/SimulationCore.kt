@@ -75,22 +75,22 @@ open class SimulationCore {
     /**
      * Logic for [runSimulation]
      */
-    open fun onRunSimulation() { }
+    protected open fun onRunSimulation() { }
 
     /**
      * Logic for [stopSimulation]
      */
-    open fun onStopSimulation() { }
+    protected open fun onStopSimulation() { }
 
     /**
      * Logic for [pauseSimulation]
      */
-    open fun onPauseSimulation() { }
+    protected open fun onPauseSimulation() { }
 
     /**
      * Logic for [resumeSimulation]
      */
-    open fun onResumeSimulation() { }
+    protected open fun onResumeSimulation() { }
 
     companion object {
         const val MAX_SPEED_UP = 100.0
