@@ -51,7 +51,7 @@ class OverallStats {
     }
 
     override fun toString(): String {
-        val confInt = systemTime.getConfidenceInterval(95)
+        val confInt = systemTime.getConfidenceInterval(90)
         var str = "\nAverage customers served: ${customersServed.mean.round(3)}" +
                 "\nAverage system time: ${systemTime.mean.round(3)} sec / ${systemTime.mean.secondsToMinutes().round(3)} min" +
                 "\n\t95% confidence interval <${confInt.first}; ${confInt.second}> sec" +

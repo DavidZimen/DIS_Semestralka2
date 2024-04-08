@@ -20,8 +20,8 @@ class DiscreteStatistic : Statistic() {
         count++
 
         calculateMinMax(sampleDouble)
-        calculateVariance()
         calculateMean()
+        calculateVariance()
         calculateStandardDeviation()
     }
 
@@ -30,7 +30,8 @@ class DiscreteStatistic : Statistic() {
     }
 
     private fun calculateVariance() {
-        variance = ( (1 / count) * squareSum ) - ( (1 / count) * sum ).pow(2)
+        val newVariance = ((1.0 / count) * squareSum) - ((1.0 / count) * sum).pow(2)
+        variance = newVariance
     }
 
     private fun calculateStandardDeviation() {

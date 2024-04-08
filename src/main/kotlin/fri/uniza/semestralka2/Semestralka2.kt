@@ -30,7 +30,7 @@ fun main() {
 //            println("\r${(state as CompanyEventSimulation.CompanySimulationState).customers.size}")
 //        }
 //        speedUpSimulation()
-        replicationsCount = 25000
+        replicationsCount = 10000
         setClosingTime(LocalTime.of(17, 30))
         cashDeskCount = 4
         serviceDeskCount = 13

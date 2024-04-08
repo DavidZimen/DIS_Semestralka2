@@ -297,7 +297,7 @@ class CompanyEventSimulation : EventSimulationCore() {
     fun moveToSource(customer: Customer) = source.add(customer)
 
     /**
-     * Add [customer] to [sink] when he reached [CustomerState.EXITED].
+     * Add [customer] to [sink] when he reached [CustomerState.LEFT].
      */
     fun moveToSink(customer: Customer) = sink.add(customer)
 

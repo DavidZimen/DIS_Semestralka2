@@ -45,7 +45,7 @@ enum class CustomerState {
     /**
      * Customer is waiting in ticket machine queue.
      */
-    WAITING_FOR_TICKET,
+    IN_TICKET_QUEUE,
     /**
      * Customer is at ticket machine, choosing his type.
      */
@@ -73,7 +73,7 @@ enum class CustomerState {
     /**
      * Customer left the company served.
      */
-    EXITED,
+    LEFT,
     /**
      * Customers, that did not receive ticket due to closing hours
      */

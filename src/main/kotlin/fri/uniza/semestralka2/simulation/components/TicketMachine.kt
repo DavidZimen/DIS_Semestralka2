@@ -31,11 +31,11 @@ class TicketMachine(
     }
 
     /**
-     * Sets state of the [agent] to to [CustomerState.WAITING_FOR_TICKET].
+     * Sets state of the [agent] to to [CustomerState.IN_TICKET_QUEUE].
      */
     override fun onQueueAdd(agent: Customer) = with(agent) {
         ticketMachineQueueStartTime = core.simulationTime
-        state = CustomerState.WAITING_FOR_TICKET
+        state = CustomerState.IN_TICKET_QUEUE
     }
 
     /**

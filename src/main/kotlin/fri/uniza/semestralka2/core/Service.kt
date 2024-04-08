@@ -34,9 +34,9 @@ open class Service<T>(
         get() = serving != null
 
     /**
-     * Current [State] of the [Service].
+     * Current [ServiceState] of the [Service].
      */
-    var state = State.FREE
+    var state = ServiceState.FREE
         private set
 
     /**
@@ -50,7 +50,7 @@ open class Service<T>(
      */
     private var serving: T? = null
         private set(value) {
-            state = if (value == null) State.FREE else State.OCCUPIED
+            state = if (value == null) ServiceState.FREE else ServiceState.OCCUPIED
             field = value
         }
 
@@ -89,7 +89,7 @@ open class Service<T>(
     /**
      * Possible states of the [Service].
      */
-    enum class State(val value: Int) {
+    enum class ServiceState(val value: Int) {
         FREE(0),
         OCCUPIED(1);
     }
