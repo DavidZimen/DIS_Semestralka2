@@ -9,6 +9,10 @@ import fri.uniza.semestralka2.statistics.ContinuousStatistic
 import java.util.*
 
 /**
+ * Queue for [ServingDesk].
+ * Is divided into two [PriorityQueue]s. One for [CustomerType.ONLINE] and other for everyone else.
+ * [onlineQueue] is prioritized by [Customer.ticketTime].
+ * [baseQueue] is prioritized by [Customer.type] and then by [Customer.ticketTime].
  * @author David Zimen
  */
 class ServingDeskQueue(
@@ -17,11 +21,20 @@ class ServingDeskQueue(
     private val core: CompanyEventSimulation
 ) {
 
+    /**
+     * Stats regarding queue length at given time points.
+     */
     var stats = ContinuousStatistic(startTime)
         private set
 
+    /**
+     * Queue for [CustomerType.COMMON] and [CustomerType.CONTRACTED].
+     */
     private val baseQueue = PriorityQueue(compareBy<Customer> { it.type }.thenBy { it.ticketTime } )
 
+    /**
+     * Queue for [CustomerType.ONLINE].
+     */
     private val onlineQueue = PriorityQueue(compareBy<Customer> { it.ticketTime })
 
     @Throws(IllegalStateException::class)
@@ -48,6 +61,11 @@ class ServingDeskQueue(
         stats.addEntry(baseQueue.size + onlineQueue.size, core.simulationTime)
     }
 
+    /**
+     * Removes customer of [type] from queue.
+     * Adds information to statistics.
+     * @return Removed [Customer] from queue or null when there is no customer of provided [type].
+     */
     fun remove(type: CustomerType): Customer? {
         val customer = when (type) {
             CustomerType.ONLINE -> onlineQueue.poll()
@@ -67,6 +85,9 @@ class ServingDeskQueue(
         return customer
     }
 
+    /**
+     * Checks if [ServingDeskQueue] is empty.
+     */
     fun isEmpty(type: CustomerType): Boolean {
         return when (type) {
             CustomerType.ONLINE -> onlineQueue.isEmpty()
@@ -74,7 +95,13 @@ class ServingDeskQueue(
         }
     }
 
+    /**
+     * If some other customer can be added to queue.
+     */
     fun canAdd() = baseQueue.size + onlineQueue.size < maxLength
 
+    /**
+     * @return Whether queue size is at [maxLength].
+     */
     fun isAtMaximumCapacity() = baseQueue.size + onlineQueue.size == maxLength
 }

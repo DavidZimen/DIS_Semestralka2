@@ -19,6 +19,11 @@ open class CashDesk(
     override val core: CompanyEventSimulation
 ) : Service<Customer>(name, servingStart, servingEnd, core) {
 
+    /**
+     * Stars serving provided [agent].
+     * Changes its [Customer.state] and [Customer.cashDeskPaid].
+     * @throws IllegalStateException when [Customer.cashDeskQueue] is not the same as this instance.
+     */
     @Throws(IllegalStateException::class)
     override fun onServingStart(agent: Customer) {
         // if customer waited in different queue
@@ -34,6 +39,10 @@ open class CashDesk(
         }
     }
 
+    /**
+     * Adds [agent] to [queue].
+     * Sets [Customer.cashDeskQueueStartTime], [Customer.cashDeskQueue] and [Customer.state] attributes.
+     */
     @Throws(IllegalStateException::class)
     override fun onQueueAdd(agent: Customer) {
         // if customer id waiting in
@@ -52,6 +61,9 @@ open class CashDesk(
         super.onQueueAdd(agent)
     }
 
+    /**
+     * Removes [agent] from queue and adds time spent in [queue] to [CompanyEventSimulation.replicationStats].
+     */
     override fun onQueueRemove(agent: Customer) {
         if (agent.cashDeskQueueStartTime == -1.0) {
             core.replicationStats.cashDeskQueueTime.addEntry(0)

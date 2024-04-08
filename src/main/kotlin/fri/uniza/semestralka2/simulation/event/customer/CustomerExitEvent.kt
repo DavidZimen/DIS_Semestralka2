@@ -5,6 +5,9 @@ import fri.uniza.semestralka2.simulation.event.CompanyEvent
 import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 
+/**
+ * @author David Zimen
+ */
 class CustomerExitEvent(
     time: Double,
     private val customer: Customer,

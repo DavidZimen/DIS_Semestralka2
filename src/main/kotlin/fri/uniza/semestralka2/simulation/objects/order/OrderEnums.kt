@@ -1,6 +1,7 @@
 package fri.uniza.semestralka2.simulation.objects.order
 
 import fri.uniza.semestralka2.general_utils.isALessThanB
+import fri.uniza.semestralka2.simulation.objects.customer.Customer
 
 /**
  * Type of the order in company.

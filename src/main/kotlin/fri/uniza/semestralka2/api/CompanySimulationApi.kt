@@ -79,6 +79,9 @@ class CompanySimulationApi private constructor() {
         simulation.simulationStateObservable.unsubscribe(name)
     }
 
+    /**
+     * Allow user to set entry parameter for the simulation such as, number of replications, service desks and cash desks.
+     */
     fun setEntryParameters(replicationsCount: Int, serviceDeskCount: Int, cashDeskCount: Int) {
         simulation.replicationsCount = replicationsCount.toLong()
         simulation.serviceDeskCount = serviceDeskCount

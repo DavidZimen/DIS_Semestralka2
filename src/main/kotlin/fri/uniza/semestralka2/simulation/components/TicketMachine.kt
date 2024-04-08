@@ -16,25 +16,39 @@ class TicketMachine(
     override val core: CompanyEventSimulation
 ) : Service<Customer>(name, servingStart, servingEnd, core) {
 
+    /**
+     * Sets [agent]s state to [CustomerState.PRINTING_TICKET].
+     */
     override fun onServingStart(agent: Customer) {
         agent.state = CustomerState.PRINTING_TICKET
     }
 
+    /**
+     * When ticket is printed, it sets [Customer.ticketTime] to current simulation time.
+     */
     override fun onServingEnd(agent: Customer) {
         agent.ticketTime = core.simulationTime
     }
 
-    override fun onQueueAdd(agent: Customer) {
-        with(agent) {
-            ticketMachineQueueStartTime = core.simulationTime
-            state = CustomerState.WAITING_FOR_TICKET
-        }
+    /**
+     * Sets state of the [agent] to to [CustomerState.WAITING_FOR_TICKET].
+     */
+    override fun onQueueAdd(agent: Customer) = with(agent) {
+        ticketMachineQueueStartTime = core.simulationTime
+        state = CustomerState.WAITING_FOR_TICKET
     }
 
+    /**
+     * Adds time of the agent in [queue] to [CompanyEventSimulation.replicationStats].
+     */
     override fun onQueueRemove(agent: Customer) {
         core.replicationStats.ticketQueueTime.addEntry(core.simulationTime - agent.ticketMachineQueueStartTime)
     }
 
+    /**
+     * To all customers in [removedList] sets state to [CustomerState.LEFT_TICKET_MACHINE].
+     * Also moves them to [CompanyEventSimulation.ticketMachineSink], so it is clear, they were not served.
+     */
     override fun onRemovedElements(removedList: List<Customer>) {
         removedList.forEach {
             it.state = CustomerState.LEFT_TICKET_MACHINE
