@@ -280,6 +280,7 @@ class CompanyEventSimulation : EventSimulationCore() {
             customers = source.map { it.toDto() }
             employees = serviceDesks.map { it.toDto() } + cashDesks.map { it.toDto() } + ticketMachine.toDto()
             overallStats = this@CompanyEventSimulation.overallStats.toDto()
+            replicationStats = this@CompanyEventSimulation.replicationStats.toDto()
         }
         super.updateSimulationState()
     }
@@ -428,5 +429,6 @@ class CompanyEventSimulation : EventSimulationCore() {
         lateinit var customers: List<CustomerDto>
         lateinit var employees: List<ServiceDto>
         lateinit var overallStats: OverallStatsDto
+        lateinit var replicationStats: ReplicationStatsDto
     }
 }

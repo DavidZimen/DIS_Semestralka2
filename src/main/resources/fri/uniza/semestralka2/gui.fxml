@@ -219,7 +219,7 @@
                </FlowPane>
                <VBox fx:id="wholeVBox" prefHeight="870.0" prefWidth="1847.0">
                   <children>
-                     <VBox fx:id="overallVBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="1847.0">
+                     <VBox fx:id="overallVBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="389.0" prefWidth="1850.0">
                         <children>
                            <HBox prefHeight="33.0" prefWidth="1850.0">
                               <children>
@@ -238,7 +238,7 @@
                                  </Label>
                               </children>
                            </HBox>
-                           <HBox prefHeight="331.0" prefWidth="1847.0">
+                           <HBox prefHeight="364.0" prefWidth="1850.0">
                               <children>
                                  <VBox prefHeight="301.0" prefWidth="471.0">
                                     <children>
@@ -247,7 +247,7 @@
                                              <Font name="System Bold" size="14.0" />
                                           </font>
                                        </Label>
-                                       <TableView fx:id="workloadsTable" maxHeight="-Infinity" prefHeight="301.0" prefWidth="354.0">
+                                       <TableView fx:id="workloadsTable" maxHeight="-Infinity" prefHeight="322.0" prefWidth="471.0">
                                           <columns>
                                              <TableColumn fx:id="worklName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
                                              <TableColumn fx:id="worklMean" editable="false" prefWidth="96.0" sortable="false" text="Average" />
@@ -264,7 +264,7 @@
                                              <Font name="System Bold" size="14.0" />
                                           </font>
                                        </Label>
-                                       <TableView fx:id="queueLengthsTable" maxHeight="-Infinity" prefHeight="301.0" prefWidth="354.0">
+                                       <TableView fx:id="queueLengthsTable" maxHeight="-Infinity" prefHeight="321.0" prefWidth="471.0">
                                           <columns>
                                              <TableColumn fx:id="queueName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
                                              <TableColumn fx:id="queueMean" editable="false" prefWidth="96.0" sortable="false" text="Average" />
@@ -321,24 +321,33 @@
                            </HBox>
                         </children>
                      </VBox>
-                     <VBox fx:id="replicationVBox" prefHeight="566.0" prefWidth="1847.0">
+                     <VBox fx:id="replicationVBox" prefHeight="771.0" prefWidth="1850.0">
                         <children>
-                           <Label text="Replication overview">
-                              <font>
-                                 <Font name="System Bold" size="20.0" />
-                              </font>
-                              <VBox.margin>
-                                 <Insets bottom="10.0" />
-                              </VBox.margin>
-                           </Label>
-                           <HBox prefHeight="601.0" prefWidth="1847.0">
-                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="1005.0">
+                           <HBox prefHeight="100.0" prefWidth="200.0">
+                              <children>
+                                 <Label text="Replication overview">
+                                    <font>
+                                       <Font name="System Bold" size="20.0" />
+                                    </font>
+                                 </Label>
+                                 <Label fx:id="repNumber" text="Replications number:">
+                                    <font>
+                                       <Font size="14.0" />
+                                    </font>
+                                    <HBox.margin>
+                                       <Insets left="50.0" top="5.0" />
+                                    </HBox.margin>
+                                 </Label>
+                              </children>
+                           </HBox>
+                           <HBox prefHeight="717.0" prefWidth="1850.0">
+                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1005.0">
                                  <Label text="Customers">
                                     <font>
                                        <Font name="System Bold" size="16.0" />
                                     </font>
                                  </Label>
-                                 <TableView fx:id="customersTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="441.0" prefWidth="1005.0">
+                                 <TableView fx:id="customersTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="689.0" prefWidth="1005.0">
                                     <columns>
                                        <TableColumn fx:id="name" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" text="Name" />
                                        <TableColumn fx:id="cusType" editable="false" minWidth="100.0" prefWidth="100.0" sortable="false" text="Type" />
@@ -352,7 +361,7 @@
                                     </columns>
                                  </TableView>
                               </VBox>
-                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="477.0">
+                              <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="713.0" prefWidth="590.0">
                                  <HBox.margin>
                                     <Insets left="150.0" />
                                  </HBox.margin>
@@ -361,7 +370,7 @@
                                        <Font name="System Bold" size="16.0" />
                                     </font>
                                  </Label>
-                                 <TableView fx:id="empTable" maxHeight="-Infinity" prefHeight="442.0" prefWidth="477.0">
+                                 <TableView fx:id="empTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="520.0" prefWidth="481.0">
                                     <columns>
                                        <TableColumn fx:id="empName" editable="false" prefWidth="137.0" sortable="false" text="Name" />
                                        <TableColumn fx:id="queueLength" editable="false" prefWidth="96.0" sortable="false" text="QueueLength" />
@@ -369,6 +378,46 @@
                                        <TableColumn fx:id="empState" editable="false" prefWidth="104.0" sortable="false" text="Current state" />
                                     </columns>
                                  </TableView>
+                                 <VBox prefHeight="154.0" prefWidth="477.0">
+                                    <children>
+                                       <Label text="Time in system:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                       </Label>
+                                       <Label fx:id="repSystemTime" />
+                                       <Label layoutX="10.0" layoutY="10.0" text="Time in ticket machine queue:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="repTicketTime" layoutX="10.0" layoutY="29.0" />
+                                       <Label layoutX="10.0" layoutY="10.0" text="Time in cash desk queue:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="repCashDeskTime" layoutX="10.0" layoutY="70.0" />
+                                       <Label layoutX="10.0" layoutY="48.0" text="Last customer exit:">
+                                          <font>
+                                             <Font name="System Bold" size="13.0" />
+                                          </font>
+                                          <VBox.margin>
+                                             <Insets top="5.0" />
+                                          </VBox.margin>
+                                       </Label>
+                                       <Label fx:id="repLastExit" layoutX="10.0" layoutY="111.0" />
+                                    </children>
+                                    <padding>
+                                       <Insets top="10.0" />
+                                    </padding>
+                                 </VBox>
                               </VBox>
                            </HBox>
                         </children>

@@ -94,6 +94,16 @@ class GuiController : Initializable {
     private lateinit var ovCashDeskTime: Label
     @FXML
     private lateinit var ovLastExit: Label
+    @FXML
+    private lateinit var repNumber: Label
+    @FXML
+    private lateinit var repSystemTime: Label
+    @FXML
+    private lateinit var repTicketTime: Label
+    @FXML
+    private lateinit var repCashDeskTime: Label
+    @FXML
+    private lateinit var repLastExit: Label
 
     // INPUTS
     @FXML
@@ -328,6 +338,13 @@ class GuiController : Initializable {
                     //employees
                     employees = FXCollections.observableArrayList(simState.employees)
                     empTable.items = employees
+
+                    with(simState.replicationStats) {
+                        repSystemTime.text = avgSystemTime.toOwnString()
+                        repTicketTime.text = avgTicketQueueTime.toOwnString()
+                        repCashDeskTime.text = avgCashDeskQueueTime.toOwnString()
+                        repLastExit.text = lastCustomerExit
+                    }
                 } else {
                     // to overall stats
                     with(simState.overallStats) {
@@ -348,6 +365,7 @@ class GuiController : Initializable {
                 simState.speed.toSpeedLabel()
                 speed.value = simState.speed.round(2)
                 repsExecuted.text = "Replications executed: ${simState.replicationsExecuted}"
+                repNumber.text = "Replication number: ${simState.replicationsExecuted + 1}"
 
                 this.state = simState.state
             }
@@ -495,7 +513,7 @@ class GuiController : Initializable {
 
         with(jFreeChart.plot as XYPlot) {
             backgroundPaint = Color.WHITE
-            renderer.setSeriesStroke(0, BasicStroke(1.5f))
+            renderer.setSeriesStroke(0, BasicStroke(1.75f))
             renderer.setSeriesPaint(0, color)
         }
         chart.chart = jFreeChart
