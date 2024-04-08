@@ -1,6 +1,5 @@
 package fri.uniza.semestralka2.core
 
-import fri.uniza.semestralka2.statistics.ContinuousStatistic
 import java.util.*
 
 /**
@@ -15,29 +14,18 @@ open class Service<T>(
     /**
      * Time from when the [Service] should be active.
      */
-    var servingStartTime: Double,
+    servingStartTime: Double,
 
     /**
      * Time until when the [Service] should be active.
      */
-    var servingEndTime: Double,
+    servingEndTime: Double,
 
     /**
      * [EventSimulationCore] to which the [Service] belongs.
      */
-    protected open val core: EventSimulationCore
-) {
-    /**
-     * Current length of the [queue].
-     */
-    val queueLength: Int
-        get() = queue.size
-
-    /**
-     * Indicator if [queue] contains no customer.
-     */
-    val isQueueEmpty: Boolean
-        get() = queue.isEmpty()
+    core: EventSimulationCore
+) : Queue<T>(Int.MAX_VALUE, servingStartTime, servingEndTime, core) {
 
     /**
      * Indicator if employee is currently serving.
@@ -58,12 +46,6 @@ open class Service<T>(
         private set
 
     /**
-     * Stats for calculating average queue length.
-     */
-    var queueStats = ContinuousStatistic(servingStartTime)
-        private set
-
-    /**
      * Agent currently served by [Service].
      */
     private var serving: T? = null
@@ -71,11 +53,6 @@ open class Service<T>(
             state = if (value == null) State.FREE else State.OCCUPIED
             field = value
         }
-
-    /**
-     * Queue for objects, if services is occupied.
-     */
-    private val queue: Queue<T> = LinkedList()
 
     // OPEN FUNCTIONS
     /**
@@ -87,21 +64,6 @@ open class Service<T>(
      * Action te be executed when calling [finishServing].
      */
     protected open fun onServingEnd(agent: T) { }
-
-    /**
-     * Action te be executed when calling [addToQueue].
-     */
-    protected open fun onQueueAdd(agent: T) { }
-
-    /**
-     * Action te be executed when calling [removeFromQueue].
-     */
-    protected open fun onQueueRemove(agent: T) { }
-
-    /**
-     * Action to be executed on removed elements from [queue].
-     */
-    protected open fun onRemovedElements(removedList: List<T>) { }
 
     // PUBLIC FUNCTIONS
     @Throws(IllegalStateException::class)
@@ -122,33 +84,6 @@ open class Service<T>(
         onServingEnd(agent)
         serving = null
         workload.calculateWorkFlow()
-    }
-
-    @Throws(IllegalStateException::class)
-    fun addToQueue(agent: T) {
-        if (queue.contains(agent)) {
-            throw IllegalStateException("Agent already in queue $name")
-        }
-        onQueueAdd(agent)
-        queue.add(agent)
-        queueStats.addEntry(queueLength, core.simulationTime)
-    }
-
-    fun removeFromQueue(): T? {
-        if (queue.isEmpty()) {
-            return null
-        }
-        val agent = queue.peek()
-        onQueueRemove(agent)
-        queueStats.addEntry(queueLength - 1, core.simulationTime)
-        return queue.poll()
-    }
-
-    fun removeAll() {
-        val removedList = queue.toList()
-        onRemovedElements(removedList)
-        queue.clear()
-        queueStats.addEntry(queueLength, core.simulationTime)
     }
 
     /**

@@ -16,7 +16,7 @@ import java.util.*
  * @author David Zimen
  */
 class ServingDeskQueue(
-    private val maxLength: Int = Int.MAX_VALUE,
+    private var maxLength: Int = Int.MAX_VALUE,
     startTime: Double,
     private val core: CompanyEventSimulation
 ) {
