@@ -8,6 +8,7 @@ import fri.uniza.semestralka2.general_utils.round
 import fri.uniza.semestralka2.general_utils.toSeconds
 import fri.uniza.semestralka2.generator.*
 import fri.uniza.semestralka2.simulation.components.*
+import fri.uniza.semestralka2.simulation.event.OpenOnlineServingDeskEvent
 import fri.uniza.semestralka2.simulation.event.customer.CustomerArrivalEvent
 import fri.uniza.semestralka2.simulation.objects.customer.*
 import fri.uniza.semestralka2.simulation.objects.dto.*
@@ -210,6 +211,9 @@ class CompanyEventSimulation : EventSimulationCore() {
         CustomerSequence.reset()
         initServices()
         scheduleEvent(CustomerArrivalEvent(simulationTime + arrivalGenerator.sample().minutesToSeconds(), this))
+
+        // schedule opening another place for online customers
+        scheduleEvent(OpenOnlineServingDeskEvent(LocalTime.of(12, 0).toSeconds(), this))
     }
 
     override fun afterSimulation() {
@@ -302,9 +306,30 @@ class CompanyEventSimulation : EventSimulationCore() {
     fun moveToSink(customer: Customer) = sink.add(customer)
 
     /**
+     * Adds another serving place, start serving from [openTime].
+     */
+    fun openAnotherPlace(openTime: Double, allowed: Array<CustomerType>) {
+        var i = 1
+        var name = "Additional desk $i"
+
+        while (serviceDesks.any { it.name == name }) {
+            name = "Additional desk ${++i}"
+        }
+
+        serviceDesks.addFirst(ServingDesk(
+            name,
+            openTime,
+            simulationEndTime,
+            allowed,
+            this
+        ))
+        overallStats.serviceDesksWorkload[name] = DiscreteStatistic()
+    }
+
+    /**
      * Initializes [OverallStats] before simulation starts.
      */
-    private fun initOverallStats(){
+    private fun initOverallStats() {
         overallStats.reset()
     }
 
