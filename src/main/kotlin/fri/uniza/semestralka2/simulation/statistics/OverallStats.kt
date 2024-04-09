@@ -54,7 +54,7 @@ class OverallStats {
         val confInt = systemTime.getConfidenceInterval(90)
         var str = "\nAverage customers served: ${customersServed.mean.round(3)}" +
                 "\nAverage system time: ${systemTime.mean.round(3)} sec / ${systemTime.mean.secondsToMinutes().round(3)} min" +
-                "\n\t95% confidence interval <${confInt.first}; ${confInt.second}> sec" +
+                "\n\t95% confidence interval <${confInt.first.secondsToMinutes().round(3)}; ${confInt.second.secondsToMinutes().round(3)}> min" +
                 "\nAverage ticket machine queue time: ${ticketQueueTime.mean.round(3)} sec / ${ticketQueueTime.mean.secondsToMinutes().round(3)} min" +
                 "\nAverage ticket machine queue length: ${ticketQueueLength.mean.round(3)}" +
                 "\nAverage ticket machine workload: ${(ticketMachineWorkload.mean * 100).round(2)}%" +

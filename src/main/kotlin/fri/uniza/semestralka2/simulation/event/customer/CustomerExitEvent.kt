@@ -6,6 +6,8 @@ import fri.uniza.semestralka2.simulation.objects.customer.Customer
 import fri.uniza.semestralka2.simulation.objects.customer.CustomerState
 
 /**
+ * Moves customer to sink, and sets statistics in the [core].
+ * Does not schedule another event.
  * @author David Zimen
  */
 class CustomerExitEvent(
